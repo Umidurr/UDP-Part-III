@@ -91,6 +91,18 @@ public class ShopManager : MonoBehaviour
                 if (itemName != null) itemName.text = item.itemName;
                 if (itemCost != null) itemCost.text = item.isPurchasable ? $"{item.buyPrice}" : " -";
 
+                // Apply red overlay (FF6464) with full opacity if the item is not purchasable
+                if (!item.isPurchasable)
+                {
+                    // If item is NOT purchasable, apply red (FF6464) with full opacity
+                    itemSlot.style.backgroundColor = new StyleColor(new Color(1.0f, 0.39f, 0.39f, 1.0f)); // FF6464, full opacity
+                }
+                else
+                {
+                    // If item is purchasable but unselected, apply grey (717171) with opacity 212/255
+                    itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f)); // 717171, 212 opacity
+                }
+
                 // Assuming itemPic is meant to display an image, set its background
                 if (itemPic != null && item.itemIcon != null)
                 {
