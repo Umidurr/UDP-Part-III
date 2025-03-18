@@ -78,7 +78,7 @@ public class UIDemo : MonoBehaviour {
         _button = _root.Q<Button>("MerchantButton");
 
         //set initial label text
-        _label.text = "The UI has been updated " + _counter + " time(s).";
+        //_label.text = "The UI has been updated " + _counter + " time(s).";
 
         /* 
         This is an example of event-based input handling using
@@ -158,7 +158,7 @@ public class UIDemo : MonoBehaviour {
         _counter++;
 
         //update label
-        _label.text = "The UI has been updated " + _counter + " time(s).";
+        //_label.text = "The UI has been updated " + _counter + " time(s).";
     }
 
     //update the button presentation
