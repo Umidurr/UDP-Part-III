@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Equip_Wrist_Gauntlet_0: -7315889964331276839
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

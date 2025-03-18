@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Equip_Head_Bandanna_0: 4406098796910582933
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

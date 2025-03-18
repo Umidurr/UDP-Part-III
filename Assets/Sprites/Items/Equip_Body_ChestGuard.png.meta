@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Equip_Body_ChestGuard_0: 5383240024580144532
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

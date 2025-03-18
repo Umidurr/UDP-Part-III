@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Equip_Head_QuiltedHood_0: -4385367530321230166
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

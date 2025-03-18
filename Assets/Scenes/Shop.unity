@@ -431,6 +431,52 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &903244611
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 903244613}
+  - component: {fileID: 903244612}
+  m_Layer: 0
+  m_Name: PlayerInventory
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &903244612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 903244611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 746b004b2851da240beebfaa20e91236, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  money: 10000
+  ownedItems: []
+--- !u!4 &903244613
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 903244611}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.16940439, y: 0.09311903, z: 0.020564094}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2004644649}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1126553417
 GameObject:
   m_ObjectHideFlags: 0
@@ -686,7 +732,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2004644649}
-  - component: {fileID: 2004644651}
+  - component: {fileID: 2004644650}
   m_Layer: 0
   m_Name: UI
   m_TagString: Untagged
@@ -708,9 +754,10 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 336958618}
+  - {fileID: 903244613}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2004644651
+--- !u!114 &2004644650
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -719,10 +766,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 2004644648}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53cfadea5d74314458a45e75173a58f3, type: 3}
+  m_Script: {fileID: 11500000, guid: 083df866299af6a42aba3f56eb59c859, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   doc: {fileID: 336958617}
+  playerInventory: {fileID: 903244612}
+  shopItems:
+  - {fileID: 11400000, guid: 78f91d74386772b44b6ae8aefe778497, type: 2}
+  - {fileID: 11400000, guid: 507c3db05db1fe4499b6e22e0999ad82, type: 2}
+  - {fileID: 11400000, guid: b387db62c3ddba14399b67e279905eb2, type: 2}
+  - {fileID: 11400000, guid: f5f6de5b9d2e4d34ba71f10d2da4bde9, type: 2}
+  - {fileID: 11400000, guid: 54439bb2bb3596a49b99373391677481, type: 2}
+  - {fileID: 11400000, guid: 632b356d3d975a94e9af0a829fc90974, type: 2}
+  - {fileID: 11400000, guid: 2a9bacdaee5c35d44afaeb0dc3027d8d, type: 2}
+  - {fileID: 11400000, guid: e8d8211ec741499419d7f380262cbe35, type: 2}
+  - {fileID: 11400000, guid: 799f38caa97c7ea4b850d3fd4f0c8294, type: 2}
+  - {fileID: 11400000, guid: 1cd42f91991d1a14f8e322358b9ad20f, type: 2}
+  - {fileID: 11400000, guid: d363241f6f7588e43bd9485e9b973b4f, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
