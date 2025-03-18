@@ -89,7 +89,7 @@ public class ShopManager : MonoBehaviour
                 ShopItem item = shopItems[i];
 
                 if (itemName != null) itemName.text = item.itemName;
-                if (itemCost != null) itemCost.text = item.isPurchasable ? $"${item.buyPrice}" : "$ -";
+                if (itemCost != null) itemCost.text = item.isPurchasable ? $"{item.buyPrice}" : " -";
 
                 // Assuming itemPic is meant to display an image, set its background
                 if (itemPic != null && item.itemIcon != null)

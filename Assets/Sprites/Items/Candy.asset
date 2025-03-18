@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Candy
   itemIcon: {fileID: 21300000, guid: f8ba6fdbff5aac0488885891d43ffa44, type: 3}
-  buyPrice: 0
-  sellPrice: 0
+  buyPrice: 10
+  sellPrice: 5
   isPurchasable: 1
