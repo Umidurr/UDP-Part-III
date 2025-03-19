@@ -425,10 +425,10 @@ public class ShopManager : MonoBehaviour
                 {
 
                     // Apply the correct highlight color
-                    itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 1.0f, 0.78f, 1.0f)); // 70FFC7, 100% opacity
+                    itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 1.0f, 0.78f, 100f / 255f)); // 70FFC7, 100 opacity
 
                     // Remove hover effect when selected
-                    itemSlot.UnregisterCallback<MouseEnterEvent>(evt => itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 1.0f, 0.78f, 1.0f)));
+                    itemSlot.UnregisterCallback<MouseEnterEvent>(evt => itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 1.0f, 0.78f, 100f / 255f)));
                     itemSlot.UnregisterCallback<MouseLeaveEvent>(evt => itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f)));
 
                     UpdateItemDetails(item);
@@ -442,7 +442,7 @@ public class ShopManager : MonoBehaviour
                     itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f)); // Default Grey
 
                     // Restore hover effect for non-selected items
-                    itemSlot.RegisterCallback<MouseEnterEvent>(evt => itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 1.0f, 0.78f, 1.0f)));
+                    itemSlot.RegisterCallback<MouseEnterEvent>(evt => itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 1.0f, 0.78f, 100f / 255f)));
                     itemSlot.RegisterCallback<MouseLeaveEvent>(evt => itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f)));
                 }
             }
