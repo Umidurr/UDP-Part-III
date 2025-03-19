@@ -18,5 +18,5 @@ MonoBehaviour:
   sellPrice: 23
   isPurchasable: 1
   description: '"A simple leather band that provides slight protection for the wrist."'
-  stock: 0
+  stock: 2
   allowedUsers: 0000000001000000

@@ -18,5 +18,5 @@ MonoBehaviour:
   sellPrice: 175
   isPurchasable: 1
   description: '"Golden jam from the Queen. Fully restores HP and boosts vitality."'
-  stock: 0
+  stock: 2
   allowedUsers: 000000000100000002000000

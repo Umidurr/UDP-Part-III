@@ -18,5 +18,5 @@ MonoBehaviour:
   sellPrice: 18750
   isPurchasable: 1
   description: '"Crafted from reinforced materials, it provides excellent protection"'
-  stock: 0
+  stock: 2
   allowedUsers: 000000000100000002000000

@@ -17,6 +17,7 @@ MonoBehaviour:
   buyPrice: 30
   sellPrice: 15
   isPurchasable: 1
+  stock: 2
+  initialStock: 3
   description: '"A rich, enchanted chocolate bar that restores HP."'
-  stock: 0
   allowedUsers: 000000000100000002000000

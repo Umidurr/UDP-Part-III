@@ -18,5 +18,5 @@ MonoBehaviour:
   sellPrice: 0
   isPurchasable: 0
   description: '"A mystical drum that summons Flammie, soaring you to new lands."'
-  stock: 0
+  stock: 2
   allowedUsers: 000000000100000002000000

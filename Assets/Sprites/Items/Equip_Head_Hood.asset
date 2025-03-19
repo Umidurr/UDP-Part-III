@@ -18,5 +18,5 @@ MonoBehaviour:
   sellPrice: 350
   isPurchasable: 1
   description: '"A curious cap made from the feathers of a petrified cockatrice."'
-  stock: 0
+  stock: 2
   allowedUsers: 0100000002000000

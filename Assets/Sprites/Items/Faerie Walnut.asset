@@ -18,5 +18,5 @@ MonoBehaviour:
   sellPrice: 500
   isPurchasable: 1
   description: '"A rare nut brimming with mana. Restores a large amount of MP."'
-  stock: 0
+  stock: 2
   allowedUsers: 000000000100000002000000

@@ -5,6 +5,7 @@ public class PlayerInventory : MonoBehaviour
 {
     public int money = 100000; // Player's starting money
     public int totalSpace = 20;
+    public UserType currentPlayer; // Add this
 
     // Unity does NOT support serializing Dictionaries in the Inspector, so we use a List
     public List<InventoryItem> ownedItemsList = new List<InventoryItem>();
@@ -31,20 +32,26 @@ public class PlayerInventory : MonoBehaviour
         }
     }
 
+    public UserType GetCurrentPlayer()
+    {
+        return currentPlayer;
+    }
+
     // Add an item to the inventory, increasing quantity if already owned.
-    public void AddItem(ShopItem item)
+    public void AddItem(ShopItem item, int quantity)
     {
         if (ownedItems.ContainsKey(item))
         {
-            ownedItems[item].quantity++;
+            ownedItems[item].quantity += quantity;
         }
         else
         {
-            InventoryItem newItem = new InventoryItem { item = item, quantity = 1 };
+            InventoryItem newItem = new InventoryItem { item = item, quantity = quantity };
             ownedItems[item] = newItem;
-            ownedItemsList.Add(newItem); // Keep the List in sync
+            ownedItemsList.Add(newItem); // Keep List in sync
         }
     }
+
 
     // Remove an item, deleting it from inventory if quantity reaches 0.
     public void RemoveItem(ShopItem item)

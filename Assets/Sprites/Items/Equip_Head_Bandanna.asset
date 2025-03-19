@@ -18,5 +18,5 @@ MonoBehaviour:
   sellPrice: 10
   isPurchasable: 1
   description: '"A simple yet sturdy blue bandana."'
-  stock: 0
+  stock: 2
   allowedUsers: 00000000

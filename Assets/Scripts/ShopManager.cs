@@ -32,6 +32,7 @@ public class ShopManager : MonoBehaviour
 
     // Selected Item
     private ShopItem _selectedItem;
+    private VisualElement _selectedItemSlot; // Stores the currently selected UI element
 
     // Awake: Ensure correct screen resolution
     private void Awake()
@@ -61,12 +62,25 @@ public class ShopManager : MonoBehaviour
             }
         }
 
+        // ** Reset stock when entering the game **
+        ResetStockForAllItems();
+
         // Find UI elements using their UXML names
         _playerMoneyLabel = _root.Q<UnityEngine.UIElements.Label>("MoneyTxt");
         _itemListContainer = _root.Q<VisualElement>("ITEMS");
 
         // Find and assign buttons
-        _buyButton = _root.Q<Button>("BuyButton");
+        // Find and assign Buy button from UI
+        VisualElement buyButton = _root.Q<VisualElement>("BUYSELL");
+        if (buyButton != null)
+        {
+            buyButton.RegisterCallback<ClickEvent>(evt => BuyItem());
+        }
+        else
+        {
+            UnityEngine.Debug.LogError("Buy button not found in UI!");
+        }
+
         _sellButton = _root.Q<Button>("SellButton");
 
         // Register button events
@@ -198,7 +212,6 @@ public class ShopManager : MonoBehaviour
     //        }
     //    }
     //}
-
 
 
     private void RotateShopItems()
@@ -433,14 +446,72 @@ public class ShopManager : MonoBehaviour
     {
         if (_selectedItem == null) return;
 
-        if (_selectedItem.isPurchasable && playerInventory.money >= _selectedItem.buyPrice)
+        // Find UI Elements for space and stock
+        UnityEngine.UIElements.Label amtLabel = _root.Q<UnityEngine.UIElements.Label>("Amt");
+        int amountToBuy = int.Parse(amtLabel.text); // Convert amount label to int
+
+        // Check if item is purchasable
+        if (!_selectedItem.isPurchasable)
         {
-            playerInventory.money -= _selectedItem.buyPrice;
-            playerInventory.AddItem(_selectedItem);
-            UpdateMoneyDisplay();
-            UnityEngine.Debug.LogError("Bought: " + _selectedItem.itemName);
+            UnityEngine.Debug.LogError("This item cannot be purchased!");
+            return;
         }
+
+        // Check stock availability
+        if (_selectedItem.stock == 0)
+        {
+            UnityEngine.Debug.LogError("Out of stock! Cannot purchase.");
+            return;
+        }
+
+        // Ensure we do not buy more than available stock
+        if (amountToBuy > _selectedItem.stock)
+        {
+            UnityEngine.Debug.LogError("Not enough stock available for this purchase!");
+            return;
+        }
+
+        // Check inventory space
+        int remainingSpace = playerInventory.GetRemainingSpace();
+        if (amountToBuy > remainingSpace)
+        {
+            UnityEngine.Debug.LogError("Not enough space in inventory!");
+            return;
+        }
+
+        // Restrict based on allowed users (Equipment Only)
+        if (_root.Q<VisualElement>("EQUIPMENTS").ClassListContains("active"))
+        {
+            UserType currentPlayer = playerInventory.GetCurrentPlayer();
+            if (!_selectedItem.allowedUsers.Contains(currentPlayer))
+            {
+                UnityEngine.Debug.LogError("You are not allowed to use this equipment!");
+                return;
+            }
+        }
+
+        // Check if player has enough money
+        int totalCost = _selectedItem.buyPrice * amountToBuy;
+        if (playerInventory.money < totalCost)
+        {
+            UnityEngine.Debug.LogError("Not enough money!");
+            return;
+        }
+
+        // Process purchase
+        playerInventory.money -= totalCost;
+        playerInventory.AddItem(_selectedItem, amountToBuy);
+        _selectedItem.stock -= amountToBuy;
+
+        // Update UI elements
+        UpdateMoneyDisplay();
+        UpdateInventoryDisplay();
+        SelectItem(_selectedItem); // Refresh UI to show new stock count
+
+        UnityEngine.Debug.Log($"Purchased {amountToBuy}x {_selectedItem.itemName}");
     }
+
+
 
     // Sell an item
     private void SellItem()
@@ -485,5 +556,18 @@ public class ShopManager : MonoBehaviour
         }
     }
 
+    // ** New Function to Reset Stock **
+    private void ResetStockForAllItems()
+    {
+        foreach (ShopItem item in shopItems)
+        {
+            item.ResetStock();
+        }
+
+        foreach (ShopItem item in equipmentItems)
+        {
+            item.ResetStock();
+        }
+    }
 }
 
