@@ -197,36 +197,45 @@ public class ShopManager : MonoBehaviour
     {
         for (int i = 0; i < 6; i++)
         {
-            if (i >= itemList.Count) break;
             VisualElement itemSlot = _root.Q<VisualElement>($"Item{i + 1}");
 
             if (itemSlot != null)
             {
-                UnityEngine.UIElements.Label itemName = itemSlot.Q<UnityEngine.UIElements.Label>($"ItemName{i + 1}");
-                UnityEngine.UIElements.Label itemCost = itemSlot.Q<UnityEngine.UIElements.Label>($"ItemCost{i + 1}");
-                VisualElement itemPic = itemSlot.Q<VisualElement>($"ItemPic{i + 1}");
-
-                ShopItem item = itemList[i];
-
-                if (itemName != null) itemName.text = item.itemName;
-                if (itemCost != null) itemCost.text = item.isPurchasable ? $"{item.buyPrice}" : "-";
-
-                if (itemPic != null && item.itemIcon != null)
+                if (i < itemList.Count)
                 {
-                    itemPic.style.backgroundImage = new StyleBackground(item.itemIcon);
+                    ShopItem item = itemList[i];
+                    UnityEngine.UIElements.Label itemName = itemSlot.Q<UnityEngine.UIElements.Label>($"ItemName{i + 1}");
+                    UnityEngine.UIElements.Label itemCost = itemSlot.Q<UnityEngine.UIElements.Label>($"ItemCost{i + 1}");
+                    VisualElement itemPic = itemSlot.Q<VisualElement>($"ItemPic{i + 1}");
+
+                    if (itemName != null) itemName.text = item.itemName;
+                    if (itemCost != null) itemCost.text = item.isPurchasable ? $"{item.buyPrice}" : "-";
+
+                    if (itemPic != null && item.itemIcon != null)
+                    {
+                        itemPic.style.backgroundImage = new StyleBackground(item.itemIcon);
+                    }
+
+                    itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f));
+
+                    if (!item.isPurchasable)
+                    {
+                        itemSlot.style.backgroundColor = new StyleColor(new Color(1.0f, 0.39f, 0.39f, 100f / 255f));
+                    }
+
+                    itemSlot.RegisterCallback<ClickEvent>(evt => SelectItem(item));
                 }
-
-                itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f));
-
-                if (!item.isPurchasable)
-                {
-                    itemSlot.style.backgroundColor = new StyleColor(new Color(1.0f, 0.39f, 0.39f, 100f / 255f));
-                }
-
-                itemSlot.RegisterCallback<ClickEvent>(evt => SelectItem(item));
             }
         }
+
+        // Ensure the first item is selected when switching tabs
+        if (itemList.Count > 0)
+        {
+            selectedIndex = 0;
+            SelectItem(itemList[selectedIndex]);
+        }
     }
+
 
     //private void RotateShopItems()
     //{
@@ -372,75 +381,46 @@ public class ShopManager : MonoBehaviour
     private void SelectItem(ShopItem item)
     {
         _selectedItem = item;
+        selectedIndex = GetActiveShopList().IndexOf(item); // Get correct index from active list
 
-        //// ** Set selected index based on the item's position in shopItems **
-        //selectedIndex = shopItems.IndexOf(item);
-
-        // Update Selected Item UI
+        // Update visuals & UI
         UpdateSelectedItemVisuals();
-
-        // Find UI Elements for amount selection
-        UnityEngine.UIElements.Label amtLabel = _root.Q<UnityEngine.UIElements.Label>("Amt");
-        VisualElement leftArrow = _root.Q<VisualElement>("LeftArrow");
-        VisualElement rightArrow = _root.Q<VisualElement>("RightArrow");
-
-        // Set initial amount
-        currentAmount = 1;
-
-        // If item is restricted, set to 00 and disable arrows
-        if (!item.isPurchasable)
-        {
-            amtLabel.text = "00";
-            leftArrow.SetEnabled(false);
-            rightArrow.SetEnabled(false);
-            return;
-        }
-
-        // Ensure arrows are enabled if item is purchasable
-        leftArrow.SetEnabled(true);
-        rightArrow.SetEnabled(true);
-
-        // Set default value to 01
-        amtLabel.text = "01";
+        UpdateItemDetails(item);
     }
+
 
     // ** Function to update selected item visual ** //
     private void UpdateSelectedItemVisuals()
     {
+        List<ShopItem> activeShopList = GetActiveShopList(); // Get current active list
+
         for (int i = 0; i < 6; i++)
         {
             VisualElement itemSlot = _root.Q<VisualElement>($"Item{i + 1}");
             if (itemSlot != null)
             {
-                ShopItem item = shopItems[i];
-
-                if (i == selectedIndex)
+                if (i < activeShopList.Count)
                 {
+                    ShopItem item = activeShopList[i]; // Use correct list
 
-                    // Apply the correct highlight color
-                    itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 1.0f, 0.78f, 1.0f)); // 70FFC7, 100% opacity
-
-                    // Remove hover effect when selected
-                    itemSlot.UnregisterCallback<MouseEnterEvent>(evt => itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 1.0f, 0.78f, 1.0f)));
-                    itemSlot.UnregisterCallback<MouseLeaveEvent>(evt => itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f)));
-
-                    UpdateItemDetails(item);
-                }
-                else if (!item.isPurchasable)
-                {
-                    itemSlot.style.backgroundColor = new StyleColor(new Color(1.0f, 0.39f, 0.39f, 100f / 255f)); // FF6464 (Restricted)
-                }
-                else
-                {
-                    itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f)); // Default Grey
-
-                    // Restore hover effect for non-selected items
-                    itemSlot.RegisterCallback<MouseEnterEvent>(evt => itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 1.0f, 0.78f, 1.0f)));
-                    itemSlot.RegisterCallback<MouseLeaveEvent>(evt => itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f)));
+                    if (i == selectedIndex)
+                    {
+                        itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 1.0f, 0.78f, 1.0f)); // Highlight selected item
+                        UpdateItemDetails(item);
+                    }
+                    else if (!item.isPurchasable)
+                    {
+                        itemSlot.style.backgroundColor = new StyleColor(new Color(1.0f, 0.39f, 0.39f, 100f / 255f)); // Restricted item color
+                    }
+                    else
+                    {
+                        itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f)); // Default gray
+                    }
                 }
             }
         }
     }
+
 
 
     private void UpdateItemDetails(ShopItem item)
