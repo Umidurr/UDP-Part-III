@@ -74,7 +74,7 @@ public class ShopManager : MonoBehaviour
             }
         }
 
-        // ** Reset stock when entering the game **
+        // Reset stock when entering the game
         ResetStockForAllItems();
 
         // Find UI elements using their UXML names
@@ -125,13 +125,13 @@ public class ShopManager : MonoBehaviour
         UpdateMoneyDisplay();
         UpdateInventoryDisplay(); // Ensure inventory space is updated
 
-        // ** Ensure the first item is selected AND visuals are updated **
+        // Ensure the first item is selected AND visuals are updated
         if (shopItems.Count > 0)
         {
             selectedIndex = 0;  // Set the selected index
             SelectItem(shopItems[selectedIndex]); // Select the first item
 
-            // ** Call visual update LAST to override anything else **
+            // Call visual update LAST to override anything else
             Invoke("UpdateSelectedItemVisuals", 0.1f);
         }
 
@@ -205,7 +205,7 @@ public class ShopManager : MonoBehaviour
     }
 
 
-    // ** Function to update selected item visual ** //
+    // Function to update selected item visual
     private void UpdateSelectedItemVisuals()
     {
         List<ShopItem> activeShopList = GetActiveShopList(); // Get current active list
@@ -257,7 +257,7 @@ public class ShopManager : MonoBehaviour
         if (totalSpaceLabel != null) totalSpaceLabel.text = $"/{playerInventory.totalSpace}";
         if (spaceAmtLabel != null) spaceAmtLabel.text = $"{playerInventory.GetUsedSpace()}";
 
-        // Update user usability visuals **only for equipment**
+        // Update user usability visuals only for equipment
         if (_root.Q<VisualElement>("EQUIPMENTS").ClassListContains("active"))
         {
             VisualElement randiIcon = _root.Q<VisualElement>("Randi");
@@ -505,7 +505,7 @@ public class ShopManager : MonoBehaviour
             ownedAmountLabel.text = $"{newOwnedQuantity}";
         }
 
-        // Do **NOT** reset `Amt` — keep it the same
+        // Do NOT reset `Amt` — keep it the same
         UnityEngine.Debug.Log($"Sold {sellAmount}x {_selectedItem.itemName} for {totalSellPrice}. Remaining: {newOwnedQuantity}");
     }
 
@@ -697,7 +697,7 @@ public class ShopManager : MonoBehaviour
         }
     }
 
-    // ** New Function to Reset Stock **
+    // New Function to Reset Stock
     private void ResetStockForAllItems()
     {
         foreach (ShopItem item in shopItems)
