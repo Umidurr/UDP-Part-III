@@ -17,3 +17,6 @@ MonoBehaviour:
   buyPrice: 20
   sellPrice: 10
   isPurchasable: 1
+  description: '"A simple herb that cures ailments and soothes the body."'
+  stock: 0
+  allowedUsers: 000000000100000002000000

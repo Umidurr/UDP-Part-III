@@ -17,3 +17,6 @@ MonoBehaviour:
   buyPrice: 900
   sellPrice: 450
   isPurchasable: 1
+  description: "\"A tough wooden barrel\u2014great for cover, or just rolling around.\""
+  stock: 0
+  allowedUsers: 000000000100000002000000

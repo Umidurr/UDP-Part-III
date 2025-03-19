@@ -17,3 +17,6 @@ MonoBehaviour:
   buyPrice: 10
   sellPrice: 5
   isPurchasable: 1
+  description: '"A tiny, sugary treat blessed by the fae. Restores HP."'
+  stock: 0
+  allowedUsers: 000000000100000002000000

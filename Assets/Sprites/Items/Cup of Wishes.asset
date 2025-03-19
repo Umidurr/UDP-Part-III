@@ -17,3 +17,6 @@ MonoBehaviour:
   buyPrice: 150
   sellPrice: 75
   isPurchasable: 1
+  description: '"Sacred water that revives a fallen ally with half HP."'
+  stock: 0
+  allowedUsers: 000000000100000002000000
