@@ -97,6 +97,7 @@ public class ShopManager : MonoBehaviour
         // Initialize the shop
         PopulateShop();
         UpdateMoneyDisplay();
+        UpdateInventoryDisplay(); // Ensure inventory space is updated
 
         // ** Add Header Selection and Hover Effects**
         SetupHeaders();
@@ -244,6 +245,8 @@ public class ShopManager : MonoBehaviour
         UnityEngine.UIElements.Label itemStock = _root.Q<UnityEngine.UIElements.Label>("StockAmt");
         UnityEngine.UIElements.Label ownedAmount = _root.Q<UnityEngine.UIElements.Label>("OwnedAmt");
         UnityEngine.UIElements.Label moneyTxt = _root.Q<UnityEngine.UIElements.Label>("MoneyTxt");
+        UnityEngine.UIElements.Label totalSpaceLabel = _root.Q<UnityEngine.UIElements.Label>("TotalSpace");
+        UnityEngine.UIElements.Label spaceAmtLabel = _root.Q<UnityEngine.UIElements.Label>("SpaceAmt");
 
         // Show the selected item's details
         if (itemDesc != null) itemDesc.text = item.description;
@@ -259,6 +262,10 @@ public class ShopManager : MonoBehaviour
 
         // Update money display
         if (moneyTxt != null) moneyTxt.text = $"{playerInventory.money}";
+
+        // Update inventory space display
+        if (totalSpaceLabel != null) totalSpaceLabel.text = $"/{playerInventory.totalSpace}";
+        if (spaceAmtLabel != null) spaceAmtLabel.text = $"{playerInventory.GetUsedSpace()}";
 
         // Update user usability visuals
         VisualElement randiIcon = _root.Q<VisualElement>("Randi");
@@ -402,6 +409,16 @@ public class ShopManager : MonoBehaviour
     private void UpdateMoneyDisplay()
     {
         _playerMoneyLabel.text = $"{playerInventory.money}";
+    }
+
+    // Ensure inventory space updates whenever the shop opens or items change
+    private void UpdateInventoryDisplay()
+    {
+        UnityEngine.UIElements.Label totalSpaceLabel = _root.Q<UnityEngine.UIElements.Label>("TotalSpace");
+        UnityEngine.UIElements.Label spaceAmtLabel = _root.Q<UnityEngine.UIElements.Label>("SpaceAmt");
+
+        if (totalSpaceLabel != null) totalSpaceLabel.text = $"{playerInventory.totalSpace}";
+        if (spaceAmtLabel != null) spaceAmtLabel.text = $"{playerInventory.GetUsedSpace()}";
     }
 
     // Handle keyboard shortcuts

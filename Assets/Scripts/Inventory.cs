@@ -4,6 +4,7 @@ using UnityEngine;
 public class PlayerInventory : MonoBehaviour
 {
     public int money = 100000; // Player's starting money
+    public int totalSpace = 20;
 
     // Unity does NOT support serializing Dictionaries in the Inspector, so we use a List
     public List<InventoryItem> ownedItemsList = new List<InventoryItem>();
@@ -17,9 +18,7 @@ public class PlayerInventory : MonoBehaviour
         SyncListToDictionary();
     }
 
-    /// <summary>
-    /// Synchronizes the List and Dictionary on Awake/Start.
-    /// </summary>
+    // Synchronizes the List and Dictionary on Awake/Start.
     private void SyncListToDictionary()
     {
         ownedItems.Clear();
@@ -32,9 +31,7 @@ public class PlayerInventory : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Add an item to the inventory, increasing quantity if already owned.
-    /// </summary>
+    // Add an item to the inventory, increasing quantity if already owned.
     public void AddItem(ShopItem item)
     {
         if (ownedItems.ContainsKey(item))
@@ -49,9 +46,7 @@ public class PlayerInventory : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Remove an item, deleting it from inventory if quantity reaches 0.
-    /// </summary>
+    // Remove an item, deleting it from inventory if quantity reaches 0.
     public void RemoveItem(ShopItem item)
     {
         if (ownedItems.ContainsKey(item))
@@ -65,19 +60,30 @@ public class PlayerInventory : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Get how many of an item the player owns.
-    /// </summary>
+    // Get how many of an item the player owns.
     public int GetOwnedAmount(ShopItem item)
     {
         return ownedItems.ContainsKey(item) ? ownedItems[item].quantity : 0;
     }
 
-    /// <summary>
-    /// Check if the player has an item.
-    /// </summary>
+    // Check if the player has an item.
     public bool HasItem(ShopItem item)
     {
         return ownedItems.ContainsKey(item) && ownedItems[item].quantity > 0;
     }
+
+    // Get total used inventory space
+    public int GetUsedSpace()
+    {
+        int usedSpace = 0;
+
+        // Iterate through owned items and sum up their quantities
+        foreach (KeyValuePair<ShopItem, InventoryItem> entry in ownedItems)
+        {
+            usedSpace += entry.Value.quantity; // Correctly accessing the quantity
+        }
+
+        return usedSpace;
+    }
+
 }
