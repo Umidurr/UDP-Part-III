@@ -177,43 +177,6 @@ public class ShopManager : MonoBehaviour
         }
     }
 
-
-    //private void PopulateShop()
-    //{
-    //    for (int i = 0; i < 6; i++)
-    //    {
-    //        if (i >= shopItems.Count) break;
-
-    //        VisualElement itemSlot = _root.Q<VisualElement>($"Item{i + 1}");
-
-    //        if (itemSlot != null)
-    //        {
-    //            UnityEngine.UIElements.Label itemName = itemSlot.Q<UnityEngine.UIElements.Label>($"ItemName{i + 1}");
-    //            UnityEngine.UIElements.Label itemCost = itemSlot.Q<UnityEngine.UIElements.Label>($"ItemCost{i + 1}");
-    //            VisualElement itemPic = itemSlot.Q<VisualElement>($"ItemPic{i + 1}");
-
-    //            ShopItem item = shopItems[i];
-
-    //            if (itemName != null) itemName.text = item.itemName;
-    //            if (itemCost != null) itemCost.text = item.isPurchasable ? $"{item.buyPrice}" : " -";
-
-    //            // Apply red overlay if not purchasable
-    //            itemSlot.style.backgroundColor = new StyleColor(item.isPurchasable
-    //                ? new Color(0.44f, 0.44f, 0.44f, 212f / 255f) // Grey
-    //                : new Color(1.0f, 0.39f, 0.39f, 1.0f)); // Red
-
-    //            if (itemPic != null && item.itemIcon != null)
-    //            {
-    //                itemPic.style.backgroundImage = new StyleBackground(item.itemIcon);
-    //            }
-
-    //            // **NEW: Attach Click Event to Select the Item**
-    //            itemSlot.RegisterCallback<ClickEvent>(evt => SelectItem(item));
-    //        }
-    //    }
-    //}
-
-
     private void RotateShopItems()
     {
         // Check which tab is currently active
@@ -554,13 +517,13 @@ public class ShopManager : MonoBehaviour
         // Get the new owned quantity after selling
         int newOwnedQuantity = playerInventory.GetOwnedAmount(_selectedItem);
 
-        // ✅ Update the OwnedAmt label in real-time
+        // Update the OwnedAmt label in real-time
         if (ownedAmountLabel != null)
         {
             ownedAmountLabel.text = $"{newOwnedQuantity}";
         }
 
-        // ✅ Do **NOT** reset `Amt` — keep it the same
+        // Do **NOT** reset `Amt` — keep it the same
         UnityEngine.Debug.Log($"Sold {sellAmount}x {_selectedItem.itemName} for {totalSellPrice}. Remaining: {newOwnedQuantity}");
     }
 
