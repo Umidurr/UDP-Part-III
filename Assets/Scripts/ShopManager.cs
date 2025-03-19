@@ -22,7 +22,7 @@ public class ShopManager : MonoBehaviour
     private Button _rotateButton; 
 
     // Player inventory reference
-    public Inventory playerInventory;
+    public PlayerInventory playerInventory;
 
     // List of shop items
     public List<ShopItem> shopItems;
@@ -50,8 +50,19 @@ public class ShopManager : MonoBehaviour
         // Retrieve the root UI element
         _root = doc.rootVisualElement;
 
+        // Ensure playerInventory is assigned
+        if (playerInventory == null)
+        {
+            playerInventory = FindFirstObjectByType<PlayerInventory>();
+            if (playerInventory == null)
+            {
+                UnityEngine.Debug.LogError("ShopManager: PlayerInventory is missing in the scene!");
+                return; // Prevent further execution if missing
+            }
+        }
+
         // Find UI elements using their UXML names
-        _playerMoneyLabel = _root.Q<UnityEngine.UIElements.Label>("MoneyLabel");
+        _playerMoneyLabel = _root.Q<UnityEngine.UIElements.Label>("MoneyTxt");
         _itemListContainer = _root.Q<VisualElement>("ITEMS");
 
         // Find and assign buttons
@@ -231,10 +242,23 @@ public class ShopManager : MonoBehaviour
         // Find UI Elements for description, stock, and users
         UnityEngine.UIElements.Label itemDesc = _root.Q<UnityEngine.UIElements.Label>("ItemDesc");
         UnityEngine.UIElements.Label itemStock = _root.Q<UnityEngine.UIElements.Label>("StockAmt");
+        UnityEngine.UIElements.Label ownedAmount = _root.Q<UnityEngine.UIElements.Label>("OwnedAmt");
+        UnityEngine.UIElements.Label moneyTxt = _root.Q<UnityEngine.UIElements.Label>("MoneyTxt");
 
         // Show the selected item's details
         if (itemDesc != null) itemDesc.text = item.description;
         if (itemStock != null) itemStock.text = $"{item.stock}";
+
+        // Retrieve owned amount from PlayerInventory
+        int playerOwned = playerInventory.GetOwnedAmount(item);
+        if (ownedAmount != null) ownedAmount.text = $"{playerOwned}";
+        if (ownedAmount == null)
+        {
+            UnityEngine.Debug.LogError("No owned.");
+        }
+
+        // Update money display
+        if (moneyTxt != null) moneyTxt.text = $"{playerInventory.money}";
 
         // Update user usability visuals
         VisualElement randiIcon = _root.Q<VisualElement>("Randi");
@@ -377,7 +401,7 @@ public class ShopManager : MonoBehaviour
     // Update the UI display of player money
     private void UpdateMoneyDisplay()
     {
-        //_playerMoneyLabel.text = "$" + playerInventory.money;
+        _playerMoneyLabel.text = $"{playerInventory.money}";
     }
 
     // Handle keyboard shortcuts
@@ -392,5 +416,6 @@ public class ShopManager : MonoBehaviour
             SellItem();
         }
     }
+
 }
 
