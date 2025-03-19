@@ -17,6 +17,7 @@ MonoBehaviour:
   buyPrice: 37500
   sellPrice: 18750
   isPurchasable: 1
-  description: '"Crafted from reinforced materials, it provides excellent protection"'
   stock: 2
+  initialStock: 2
+  description: '"Reinforced for a better and stronger defense."'
   allowedUsers: 000000000100000002000000
