@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Chest Guard
   itemIcon: {fileID: 5383240024580144532, guid: 29002042434b06f448154f701c76afcb, type: 3}
-  buyPrice: 0
-  sellPrice: 0
+  buyPrice: 1000
+  sellPrice: 500
   isPurchasable: 1
-  description: 
+  description: '"A reinforced guard that protects the torso, ideal for spellcasters."'
   stock: 0
   allowedUsers: 0100000002000000

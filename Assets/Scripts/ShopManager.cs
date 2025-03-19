@@ -27,6 +27,9 @@ public class ShopManager : MonoBehaviour
     // List of shop items
     public List<ShopItem> shopItems;
 
+    // List of equipment items
+    public List<ShopItem> equipmentItems;
+
     // Selected Item
     private ShopItem _selectedItem;
 
@@ -35,6 +38,10 @@ public class ShopManager : MonoBehaviour
     {
         // Set screen resolution (SNES-style resolution @ 4x)
         Screen.SetResolution(1280, 960, false);
+    }
+    private void PopulateShop()
+    {
+        PopulateShop(shopItems); // Default to shopItems if no list is provided
     }
 
     // Start: Initialize the shop UI
@@ -86,11 +93,11 @@ public class ShopManager : MonoBehaviour
 
 
     // Populate the shop item list
-    private void PopulateShop()
+    private void PopulateShop(List<ShopItem> itemList)
     {
         for (int i = 0; i < 6; i++)
         {
-            if (i >= shopItems.Count) break;
+            if (i >= itemList.Count) break;
 
             VisualElement itemSlot = _root.Q<VisualElement>($"Item{i + 1}");
 
@@ -100,7 +107,7 @@ public class ShopManager : MonoBehaviour
                 UnityEngine.UIElements.Label itemCost = itemSlot.Q<UnityEngine.UIElements.Label>($"ItemCost{i + 1}");
                 VisualElement itemPic = itemSlot.Q<VisualElement>($"ItemPic{i + 1}");
 
-                ShopItem item = shopItems[i];
+                ShopItem item = itemList[i];
 
                 if (itemName != null) itemName.text = item.itemName;
                 if (itemCost != null) itemCost.text = item.isPurchasable ? $"{item.buyPrice}" : "-";
@@ -110,7 +117,7 @@ public class ShopManager : MonoBehaviour
                     itemPic.style.backgroundImage = new StyleBackground(item.itemIcon);
                 }
 
-                // Set default background color (Nothing - 717171, 212 opacity)
+                // Set default background color (Grey - 717171, 212 opacity)
                 itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f));
 
                 // Set Restricted color (FF6464, 100 opacity) if item is not purchasable
@@ -143,6 +150,7 @@ public class ShopManager : MonoBehaviour
             }
         }
     }
+
 
     //private void PopulateShop()
     //{
@@ -183,16 +191,36 @@ public class ShopManager : MonoBehaviour
 
     private void RotateShopItems()
     {
-        if (shopItems.Count <= 6) return; // No need to rotate if there are only 6 or fewer items
+        // Check which tab is currently active
+        VisualElement itemsHeader = _root.Q<VisualElement>("ITEMS");
+        VisualElement equipmentHeader = _root.Q<VisualElement>("EQUIPMENTS");
 
-        // Remove the first item and push the rest forward
-        ShopItem firstItem = shopItems[0];
-        shopItems.RemoveAt(0);
-        shopItems.Add(firstItem); // Move the first item to the end
+        if (itemsHeader.ClassListContains("active"))
+        {
+            // Only rotate if there are more than 6 items
+            if (shopItems.Count > 6)
+            {
+                ShopItem firstItem = shopItems[0];
+                shopItems.RemoveAt(0);
+                shopItems.Add(firstItem);
 
-        // Re-populate the UI with the updated list
-        PopulateShop();
+                PopulateShop(shopItems); // Re-populate with rotated list
+            }
+        }
+        else if (equipmentHeader.ClassListContains("active"))
+        {
+            // Only rotate if there are more than 6 equipment items
+            if (equipmentItems.Count > 6)
+            {
+                ShopItem firstItem = equipmentItems[0];
+                equipmentItems.RemoveAt(0);
+                equipmentItems.Add(firstItem);
+
+                PopulateShop(equipmentItems); // Re-populate with rotated list
+            }
+        }
     }
+
 
 
     // Select an item from the list
@@ -286,10 +314,12 @@ public class ShopManager : MonoBehaviour
             equipmentHeader.RegisterCallback<ClickEvent>(evt => SetActiveTab(equipmentHeader, itemsHeader, eqBackCover, itemBackCover));
             itemsHeader.RegisterCallback<ClickEvent>(evt => SetActiveTab(itemsHeader, equipmentHeader, itemBackCover, eqBackCover));
 
-            // Mark ITEMS as active initially
+            // Mark ITEMS as active initially & populate shop with default items
             itemsHeader.AddToClassList("active");
+            PopulateShop(shopItems);
         }
     }
+
 
 
     private void SetActiveTab(VisualElement selectedTab, VisualElement otherTab, VisualElement activeBackCover, VisualElement inactiveBackCover)
@@ -303,6 +333,16 @@ public class ShopManager : MonoBehaviour
 
         // Inactive background color (717171)
         inactiveBackCover.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f));
+
+        // Determine which list to display
+        if (selectedTab.name == "EQUIPMENTS")
+        {
+            PopulateShop(equipmentItems); // Show equipment items
+        }
+        else
+        {
+            PopulateShop(shopItems); // Show default shop items
+        }
     }
 
 
@@ -353,3 +393,4 @@ public class ShopManager : MonoBehaviour
         }
     }
 }
+

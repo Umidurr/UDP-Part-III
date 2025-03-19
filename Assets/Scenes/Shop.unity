@@ -460,7 +460,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 746b004b2851da240beebfaa20e91236, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  money: 5000
+  money: 10000
   ownedItems: []
 --- !u!4 &903244613
 Transform:
@@ -783,6 +783,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 799f38caa97c7ea4b850d3fd4f0c8294, type: 2}
   - {fileID: 11400000, guid: 1cd42f91991d1a14f8e322358b9ad20f, type: 2}
   - {fileID: 11400000, guid: d363241f6f7588e43bd9485e9b973b4f, type: 2}
+  equipmentItems:
+  - {fileID: 11400000, guid: a2bdf9fd6e870034ab58501d5125daa6, type: 2}
+  - {fileID: 11400000, guid: 394e892a7b44d5b46b4dc9894d8c3be2, type: 2}
+  - {fileID: 11400000, guid: 5c7d31da52e9ad844bdc8820ebee0511, type: 2}
+  - {fileID: 11400000, guid: d4ef5b5114238724f81dbed07daaa30b, type: 2}
+  - {fileID: 11400000, guid: 14d986dfe9b5e1a40b8693db0a5ddf68, type: 2}
+  - {fileID: 11400000, guid: 1d37b0a4388814047b307056015a45b1, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

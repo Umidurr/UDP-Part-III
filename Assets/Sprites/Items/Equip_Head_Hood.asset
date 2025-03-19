@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Quilted Hood
   itemIcon: {fileID: -4385367530321230166, guid: 11ab5e4ca3917fc44ad7f546c4c26d06, type: 3}
-  buyPrice: 0
-  sellPrice: 0
+  buyPrice: 700
+  sellPrice: 350
   isPurchasable: 1
-  description: 
+  description: '"A curious cap made from the feathers of a petrified cockatrice."'
   stock: 0
   allowedUsers: 0100000002000000

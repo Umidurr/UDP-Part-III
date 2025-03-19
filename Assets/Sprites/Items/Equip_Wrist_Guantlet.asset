@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Gauntlet
   itemIcon: {fileID: -7315889964331276839, guid: ed01e0739e433334bb7b9ac25aad4454, type: 3}
-  buyPrice: 0
-  sellPrice: 0
+  buyPrice: 37500
+  sellPrice: 18750
   isPurchasable: 1
-  description: 
+  description: '"Crafted from reinforced materials, it provides excellent protection"'
   stock: 0
   allowedUsers: 000000000100000002000000

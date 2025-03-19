@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Wristband
   itemIcon: {fileID: -7085641726715658243, guid: 7fa66d316624f17409fdd710fba98c40, type: 3}
-  buyPrice: 0
-  sellPrice: 0
+  buyPrice: 45
+  sellPrice: 23
   isPurchasable: 1
-  description: 
+  description: '"A simple leather band that provides slight protection for the wrist."'
   stock: 0
   allowedUsers: 0000000001000000
