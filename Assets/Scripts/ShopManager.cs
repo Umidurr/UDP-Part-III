@@ -497,8 +497,8 @@ public class ShopManager : MonoBehaviour
             });
 
             // Click event to switch active tab
-            equipmentHeader.RegisterCallback<ClickEvent>(evt => SetActiveTab(equipmentHeader, itemsHeader, eqBackCover, itemBackCover));
-            itemsHeader.RegisterCallback<ClickEvent>(evt => SetActiveTab(itemsHeader, equipmentHeader, itemBackCover, eqBackCover));
+            equipmentHeader.RegisterCallback<ClickEvent>(evt => SetActiveTab(equipmentHeader, itemsHeader));
+            itemsHeader.RegisterCallback<ClickEvent>(evt => SetActiveTab(itemsHeader, equipmentHeader));
 
             // Mark ITEMS as active initially & populate shop with default items
             itemsHeader.AddToClassList("active");
@@ -506,28 +506,43 @@ public class ShopManager : MonoBehaviour
         }
     }
 
-
-
-    private void SetActiveTab(VisualElement selectedTab, VisualElement otherTab, VisualElement activeBackCover, VisualElement inactiveBackCover)
+    private void SetActiveTab(VisualElement selectedTab, VisualElement otherTab)
     {
         // Set selected tab active
         selectedTab.AddToClassList("active");
         otherTab.RemoveFromClassList("active");
 
-        // Active background color (4AA8D1)
-        activeBackCover.style.backgroundColor = new StyleColor(new Color(0.29f, 0.66f, 0.82f, 200f / 255f));
+        // Update tab colors to indicate selection
+        VisualElement activeBackCover = selectedTab.Q<VisualElement>("ItemBackCover") ?? selectedTab.Q<VisualElement>("EQBackCover");
+        VisualElement inactiveBackCover = otherTab.Q<VisualElement>("ItemBackCover") ?? otherTab.Q<VisualElement>("EQBackCover");
 
-        // Inactive background color (717171)
-        inactiveBackCover.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f));
+        activeBackCover.style.backgroundColor = new StyleColor(new Color(0.29f, 0.66f, 0.82f, 200f / 255f)); // Active (Blue)
+        inactiveBackCover.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f)); // Inactive (Grey)
+    }
 
-        // Determine which list to display
-        if (selectedTab.name == "EQUIPMENTS")
+    private void ToggleTab()
+    {
+        VisualElement itemsTab = _root.Q<VisualElement>("ITEMS");
+        VisualElement equipmentTab = _root.Q<VisualElement>("EQUIPMENTS");
+
+        // Check which tab is active and toggle
+        if (itemsTab.ClassListContains("active"))
         {
-            PopulateShop(equipmentItems); // Show equipment items
+            SetActiveTab(equipmentTab, itemsTab);
+            PopulateShop(equipmentItems); // Populate with Equipment Items
         }
         else
         {
-            PopulateShop(shopItems); // Show default shop items
+            SetActiveTab(itemsTab, equipmentTab);
+            PopulateShop(shopItems); // Populate with Shop Items
+        }
+
+        // Reset selection to the first item in the new tab
+        selectedIndex = 0;
+        if (shopItems.Count > 0 || equipmentItems.Count > 0)
+        {
+            _selectedItem = shopItems.Count > 0 ? shopItems[0] : equipmentItems[0];
+            SelectItem(_selectedItem);
         }
     }
 
@@ -705,33 +720,101 @@ public class ShopManager : MonoBehaviour
         {
             AdjustAmount(1);
         }
+        else if (e.keyCode == KeyCode.Q) // Press Q to switch to Items Tab
+        {
+            SwitchToItemsTab();
+        }
+        else if (e.keyCode == KeyCode.P) // Press P to switch to Equipment Tab
+        {
+            SwitchToEquipmentTab();
+        }
     }
+
+    private void SwitchToItemsTab()
+    {
+        VisualElement itemsTab = _root.Q<VisualElement>("ITEMS");
+        VisualElement equipmentTab = _root.Q<VisualElement>("EQUIPMENTS");
+        VisualElement itemBackCover = _root.Q<VisualElement>("ItemBackCover");
+        VisualElement eqBackCover = _root.Q<VisualElement>("EQBackCover");
+
+        if (!itemsTab.ClassListContains("active"))
+        {
+            SetActiveTab(itemsTab, equipmentTab);
+            PopulateShop(shopItems); // Populate with Items
+
+            // Reset selection to first item in Items tab
+            selectedIndex = 0;
+            if (shopItems.Count > 0)
+            {
+                _selectedItem = shopItems[0];
+                SelectItem(_selectedItem);
+            }
+        }
+    }
+
+    private void SwitchToEquipmentTab()
+    {
+        VisualElement itemsTab = _root.Q<VisualElement>("ITEMS");
+        VisualElement equipmentTab = _root.Q<VisualElement>("EQUIPMENTS");
+        VisualElement itemBackCover = _root.Q<VisualElement>("ItemBackCover");
+        VisualElement eqBackCover = _root.Q<VisualElement>("EQBackCover");
+
+        if (!equipmentTab.ClassListContains("active"))
+        {
+            SetActiveTab(equipmentTab, itemsTab);
+            PopulateShop(equipmentItems); // Populate with Equipment
+
+            // Reset selection to first item in Equipment tab
+            selectedIndex = 0;
+            if (equipmentItems.Count > 0)
+            {
+                _selectedItem = equipmentItems[0];
+                SelectItem(_selectedItem);
+            }
+        }
+    }
+
+    private List<ShopItem> GetActiveShopList()
+{
+    VisualElement itemsTab = _root.Q<VisualElement>("ITEMS");
+    return itemsTab.ClassListContains("active") ? shopItems : equipmentItems;
+}
+
 
     private void NavigateUp()
     {
+        List<ShopItem> activeShopList = GetActiveShopList();
+
         if (selectedIndex > 0)
         {
             selectedIndex--;
         }
-        else
+        else if (activeShopList == shopItems && shopItems.Count > 6)
         {
+            // Rotate only for shopItems if more than 6 exist
             RotateShopItems();
         }
-        SelectItem(shopItems[selectedIndex]);
+
+        SelectItem(activeShopList[selectedIndex]);
     }
 
     private void NavigateDown()
     {
-        if (selectedIndex < 5 && selectedIndex < shopItems.Count - 1)
+        List<ShopItem> activeShopList = GetActiveShopList();
+
+        if (selectedIndex < 5 && selectedIndex < activeShopList.Count - 1)
         {
             selectedIndex++;
         }
-        else
+        else if (activeShopList == shopItems && shopItems.Count > 6)
         {
+            // Rotate only for shopItems if more than 6 exist
             RotateShopItems();
         }
-        SelectItem(shopItems[selectedIndex]);
+
+        SelectItem(activeShopList[selectedIndex]);
     }
+
 
     private void AdjustAmount(int change)
     {
