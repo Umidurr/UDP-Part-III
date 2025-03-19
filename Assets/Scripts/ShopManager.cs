@@ -38,7 +38,7 @@ public class ShopManager : MonoBehaviour
     private int selectedIndex = 0;
     private int currentAmount = 1;
 
-    bool isSellPage = false;
+    bool isSellPage = true;
 
     // Awake: Ensure correct screen resolution
     private void Awake()
@@ -140,6 +140,7 @@ public class ShopManager : MonoBehaviour
         SetupHeaders();
     }
 
+
     private void PopulateShop(List<ShopItem> itemList)
     {
         for (int i = 0; i < 6; i++)
@@ -156,18 +157,31 @@ public class ShopManager : MonoBehaviour
                     VisualElement itemPic = itemSlot.Q<VisualElement>($"ItemPic{i + 1}");
 
                     if (itemName != null) itemName.text = item.itemName;
-                    if (itemCost != null) itemCost.text = item.isPurchasable ? $"{item.buyPrice}" : "-";
+
+                    // **Display the correct price based on buy/sell mode**
+                    if (itemCost != null)
+                    {
+                        if (isSellPage)
+                        {
+                            itemCost.text = item.isPurchasable ? $"{item.sellPrice}" : "-"; // Cannot sell if not purchasable
+                        }
+                        else
+                        {
+                            itemCost.text = item.isPurchasable ? $"{item.buyPrice}" : "-";
+                        }
+                    }
 
                     if (itemPic != null && item.itemIcon != null)
                     {
                         itemPic.style.backgroundImage = new StyleBackground(item.itemIcon);
                     }
 
+                    // **Restricted (not purchasable) items should be marked**
                     itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f));
 
                     if (!item.isPurchasable)
                     {
-                        itemSlot.style.backgroundColor = new StyleColor(new Color(1.0f, 0.39f, 0.39f, 100f / 255f));
+                        itemSlot.style.backgroundColor = new StyleColor(new Color(1.0f, 0.39f, 0.39f, 100f / 255f)); // Mark restricted items
                     }
 
                     itemSlot.RegisterCallback<ClickEvent>(evt => SelectItem(item));
@@ -182,6 +196,7 @@ public class ShopManager : MonoBehaviour
             SelectItem(itemList[selectedIndex]);
         }
     }
+
 
     private void RotateShopItems()
     {
@@ -345,6 +360,8 @@ public class ShopManager : MonoBehaviour
         }
     }
 
+
+
     private void SetActiveTab(VisualElement selectedTab, VisualElement otherTab)
     {
         // Set selected tab active
@@ -463,6 +480,13 @@ public class ShopManager : MonoBehaviour
     {
         if (_selectedItem == null) return; // No item selected
 
+        // **Prevent selling if item is not purchasable (restricted items)**
+        if (!_selectedItem.isPurchasable)
+        {
+            UnityEngine.Debug.LogError($"Cannot sell {_selectedItem.itemName}, it is restricted.");
+            return;
+        }
+
         // Get UI elements
         UnityEngine.UIElements.Label ownedAmountLabel = _root.Q<UnityEngine.UIElements.Label>("OwnedAmt");
         UnityEngine.UIElements.Label amtLabel = _root.Q<UnityEngine.UIElements.Label>("Amt");
@@ -505,9 +529,9 @@ public class ShopManager : MonoBehaviour
             ownedAmountLabel.text = $"{newOwnedQuantity}";
         }
 
-        // Do NOT reset `Amt` — keep it the same
         UnityEngine.Debug.Log($"Sold {sellAmount}x {_selectedItem.itemName} for {totalSellPrice}. Remaining: {newOwnedQuantity}");
     }
+
 
     // Update the UI display of player money
     private void UpdateMoneyDisplay()
