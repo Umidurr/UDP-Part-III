@@ -447,7 +447,23 @@ public class ShopManager : MonoBehaviour
         if (moneyTxt != null) moneyTxt.text = $"{playerInventory.money}";
         if (totalSpaceLabel != null) totalSpaceLabel.text = $"/{playerInventory.totalSpace}";
         if (spaceAmtLabel != null) spaceAmtLabel.text = $"{playerInventory.GetUsedSpace()}";
+
+        // Update user usability visuals **only for equipment**
+        if (_root.Q<VisualElement>("EQUIPMENTS").ClassListContains("active"))
+        {
+            VisualElement randiIcon = _root.Q<VisualElement>("Randi");
+            VisualElement purimIcon = _root.Q<VisualElement>("Purim");
+            VisualElement popoiIcon = _root.Q<VisualElement>("Popoi");
+
+            if (randiIcon != null)
+                randiIcon.style.opacity = item.allowedUsers.Contains(UserType.Randi) ? 1f : 0f;
+            if (purimIcon != null)
+                purimIcon.style.opacity = item.allowedUsers.Contains(UserType.Purim) ? 1f : 0f;
+            if (popoiIcon != null)
+                popoiIcon.style.opacity = item.allowedUsers.Contains(UserType.Popoi) ? 1f : 0f;
+        }
     }
+
 
     private void SetupHeaders()
     {
