@@ -221,7 +221,7 @@ public class ShopManager : MonoBehaviour
 
                     if (i == selectedIndex)
                     {
-                        itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 1.0f, 0.78f, 1.0f)); // Highlight selected item
+                        itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 1.0f, 0.78f, 100f / 255f)); // Highlight selected item
                         UpdateItemDetails(item);
                     }
                     else if (!item.isPurchasable)
