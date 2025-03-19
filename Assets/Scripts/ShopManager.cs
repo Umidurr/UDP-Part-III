@@ -80,20 +80,8 @@ public class ShopManager : MonoBehaviour
         PopulateShop();
         UpdateMoneyDisplay();
 
-        PrintAllUIElements(); // This will list every element in the UI
-
         // ** Add Header Selection and Hover Effects**
         SetupHeaders();
-    }
-
-    private void PrintAllUIElements()
-    {
-        UnityEngine.Debug.Log("Printing all UI elements in the document:");
-
-        foreach (var child in _root.Children())
-        {
-            UnityEngine.Debug.Log("Found element: " + child.name);
-        }
     }
 
 
@@ -218,7 +206,7 @@ public class ShopManager : MonoBehaviour
 
         // Show the selected item's details
         if (itemDesc != null) itemDesc.text = item.description;
-        if (itemStock != null) itemStock.text = $"Stock: {item.stock}";
+        if (itemStock != null) itemStock.text = $"{item.stock}";
 
         // Update user usability visuals
         VisualElement randiIcon = _root.Q<VisualElement>("Randi");
@@ -233,81 +221,90 @@ public class ShopManager : MonoBehaviour
             popoiIcon.style.opacity = item.allowedUsers.Contains(UserType.Popoi) ? 1f : 0f;
     }
 
-    // Set up headers
     private void SetupHeaders()
     {
+        // Get headers as VisualElements
         VisualElement itemsHeader = _root.Q<VisualElement>("ITEMS");
-        VisualElement equipmentsHeader = _root.Q<VisualElement>("EQUIPMENTS");
+        VisualElement equipmentHeader = _root.Q<VisualElement>("EQUIPMENTS");
 
-        if (itemsHeader == null || equipmentsHeader == null)
+        // Get background covers
+        VisualElement itemBackCover = _root.Q<VisualElement>("ItemBackCover");
+        VisualElement eqBackCover = _root.Q<VisualElement>("EQBackCover");
+
+        // Get child elements that might be intercepting input
+        VisualElement itemText = _root.Q<VisualElement>("ItemTxt");
+        VisualElement eqText = _root.Q<VisualElement>("EqTxt");
+        VisualElement itemRect = _root.Q<VisualElement>("ItemRect");
+        VisualElement eqRect = _root.Q<VisualElement>("EQRect");
+
+        if (itemsHeader != null && equipmentHeader != null && itemBackCover != null && eqBackCover != null)
         {
-            UnityEngine.Debug.LogError("ERROR: ITEMS or EQUIPMENTS header NOT FOUND in UI!");
-            return;
+            // Ensure ITEMS and EQUIPMENTS receive clicks
+            itemsHeader.pickingMode = PickingMode.Position;
+            equipmentHeader.pickingMode = PickingMode.Position;
+
+            // Prevent child elements from blocking clicks
+            if (itemText != null) itemText.pickingMode = PickingMode.Ignore;
+            if (eqText != null) eqText.pickingMode = PickingMode.Ignore;
+            if (itemRect != null) itemRect.pickingMode = PickingMode.Ignore;
+            if (eqRect != null) eqRect.pickingMode = PickingMode.Ignore;
+
+            // Fix potential overlapping issues
+            itemsHeader.BringToFront(); // Ensures ITEMS is on top
+            equipmentHeader.BringToFront();
+
+            // Default states: ITEMS active, EQUIPMENTS inactive
+            itemBackCover.style.backgroundColor = new StyleColor(new Color(0.29f, 0.66f, 0.82f, 200f / 255f)); // Active 4AA8D1
+            eqBackCover.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f)); // Inactive 717171
+
+            // Hover effect: Light version of active color
+            itemsHeader.RegisterCallback<MouseEnterEvent>(evt =>
+            {
+                if (!itemsHeader.ClassListContains("active"))
+                    itemBackCover.style.backgroundColor = new StyleColor(new Color(0.29f, 0.66f, 0.82f, 150f / 255f)); // Lighter 4AA8D1
+            });
+
+            itemsHeader.RegisterCallback<MouseLeaveEvent>(evt =>
+            {
+                if (!itemsHeader.ClassListContains("active"))
+                    itemBackCover.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f)); // Reset to 717171
+            });
+
+            equipmentHeader.RegisterCallback<MouseEnterEvent>(evt =>
+            {
+                if (!equipmentHeader.ClassListContains("active"))
+                    eqBackCover.style.backgroundColor = new StyleColor(new Color(0.29f, 0.66f, 0.82f, 150f / 255f)); // Lighter 4AA8D1
+            });
+
+            equipmentHeader.RegisterCallback<MouseLeaveEvent>(evt =>
+            {
+                if (!equipmentHeader.ClassListContains("active"))
+                    eqBackCover.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f)); // Reset to 717171
+            });
+
+            // Click event to switch active tab
+            equipmentHeader.RegisterCallback<ClickEvent>(evt => SetActiveTab(equipmentHeader, itemsHeader, eqBackCover, itemBackCover));
+            itemsHeader.RegisterCallback<ClickEvent>(evt => SetActiveTab(itemsHeader, equipmentHeader, itemBackCover, eqBackCover));
+
+            // Mark ITEMS as active initially
+            itemsHeader.AddToClassList("active");
         }
-
-        UnityEngine.Debug.Log("Headers found: ITEMS and EQUIPMENTS");
-
-        // **Force them to accept input**
-        itemsHeader.pickingMode = PickingMode.Position;
-        equipmentsHeader.pickingMode = PickingMode.Position;
-
-        // **Add Debugs for Hover**
-        itemsHeader.RegisterCallback<MouseEnterEvent>(evt =>
-        {
-            UnityEngine.Debug.Log("Hovering over ITEMS tab");
-            itemsHeader.style.backgroundColor = new StyleColor(new Color(0.29f, 0.66f, 0.82f, 200f / 255f)); // 4AA8D1
-        });
-
-        equipmentsHeader.RegisterCallback<MouseEnterEvent>(evt =>
-        {
-            UnityEngine.Debug.Log("Hovering over EQUIPMENTS tab");
-            equipmentsHeader.style.backgroundColor = new StyleColor(new Color(0.29f, 0.66f, 0.82f, 200f / 255f)); // 4AA8D1
-        });
-
-        // **Restore inactive state when not hovered**
-        itemsHeader.RegisterCallback<MouseLeaveEvent>(evt =>
-        {
-            UnityEngine.Debug.Log("Stopped hovering over ITEMS tab");
-            if (!itemsHeader.ClassListContains("active"))
-            {
-                itemsHeader.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f)); // 717171
-            }
-        });
-
-        equipmentsHeader.RegisterCallback<MouseLeaveEvent>(evt =>
-        {
-            UnityEngine.Debug.Log("Stopped hovering over EQUIPMENTS tab");
-            if (!equipmentsHeader.ClassListContains("active"))
-            {
-                equipmentsHeader.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f)); // 717171
-            }
-        });
-
-        // **Add Debugs for Clicks**
-        itemsHeader.RegisterCallback<ClickEvent>(evt =>
-        {
-            UnityEngine.Debug.Log("ITEMS tab clicked");
-            SetActiveTab(itemsHeader, equipmentsHeader);
-        });
-
-        equipmentsHeader.RegisterCallback<ClickEvent>(evt =>
-        {
-            UnityEngine.Debug.Log("EQUIPMENTS tab clicked");
-            SetActiveTab(equipmentsHeader, itemsHeader);
-        });
     }
 
-    // Set an active tab
-    private void SetActiveTab(VisualElement selectedTab, VisualElement otherTab)
+
+    private void SetActiveTab(VisualElement selectedTab, VisualElement otherTab, VisualElement activeBackCover, VisualElement inactiveBackCover)
     {
-        // Active Tab Color (4AA8D1, 200 opacity)
-        selectedTab.style.backgroundColor = new StyleColor(new Color(0.29f, 0.66f, 0.82f, 200f / 255f)); // 4AA8D1, 200 opacity
+        // Set selected tab active
         selectedTab.AddToClassList("active");
-
-        // Inactive Tab Color (717171, 212 opacity)
-        otherTab.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f)); // 717171, 212 opacity
         otherTab.RemoveFromClassList("active");
+
+        // Active background color (4AA8D1)
+        activeBackCover.style.backgroundColor = new StyleColor(new Color(0.29f, 0.66f, 0.82f, 200f / 255f));
+
+        // Inactive background color (717171)
+        inactiveBackCover.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f));
     }
+
 
     // Buy an item
     private void BuyItem()
