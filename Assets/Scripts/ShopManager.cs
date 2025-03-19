@@ -37,6 +37,8 @@ public class ShopManager : MonoBehaviour
     private int selectedIndex = 0;
     private int currentAmount = 1;
 
+    bool isSellPage = false;
+
     // Awake: Ensure correct screen resolution
     private void Awake()
     {
@@ -115,6 +117,17 @@ public class ShopManager : MonoBehaviour
         PopulateShop();
         UpdateMoneyDisplay();
         UpdateInventoryDisplay(); // Ensure inventory space is updated
+
+        // ** Ensure the first item is selected AND visuals are updated **
+        if (shopItems.Count > 0)
+        {
+            selectedIndex = 0;  // Set the selected index
+            SelectItem(shopItems[selectedIndex]); // Select the first item
+
+            // ** Call visual update LAST to override anything else **
+            Invoke("UpdateSelectedItemVisuals", 0.1f);
+        }
+
 
         // ** Add Header Selection and Hover Effects**
         SetupHeaders();
@@ -360,6 +373,9 @@ public class ShopManager : MonoBehaviour
     {
         _selectedItem = item;
 
+        // ** Set selected index based on the item's position in shopItems **
+        selectedIndex = shopItems.IndexOf(item);
+
         // Update Selected Item UI
         UpdateSelectedItemVisuals();
 
@@ -398,11 +414,17 @@ public class ShopManager : MonoBehaviour
             {
                 ShopItem item = shopItems[i];
 
-                // Set highlight color if selected
                 if (i == selectedIndex)
                 {
+
+                    // Apply the correct highlight color
                     itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 1.0f, 0.78f, 1.0f)); // 70FFC7, 100% opacity
-                    UpdateItemDetails(item); // Update labels
+
+                    // Remove hover effect when selected
+                    itemSlot.UnregisterCallback<MouseEnterEvent>(evt => itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 1.0f, 0.78f, 1.0f)));
+                    itemSlot.UnregisterCallback<MouseLeaveEvent>(evt => itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f)));
+
+                    UpdateItemDetails(item);
                 }
                 else if (!item.isPurchasable)
                 {
@@ -411,10 +433,15 @@ public class ShopManager : MonoBehaviour
                 else
                 {
                     itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f)); // Default Grey
+
+                    // Restore hover effect for non-selected items
+                    itemSlot.RegisterCallback<MouseEnterEvent>(evt => itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 1.0f, 0.78f, 1.0f)));
+                    itemSlot.RegisterCallback<MouseLeaveEvent>(evt => itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f)));
                 }
             }
         }
     }
+
 
     private void UpdateItemDetails(ShopItem item)
     {
@@ -674,19 +701,6 @@ public class ShopManager : MonoBehaviour
         if (spaceAmtLabel != null) spaceAmtLabel.text = $"{playerInventory.GetUsedSpace()}";
     }
 
-    //// Handle keyboard shortcuts
-    //private void OnKeyUp(KeyUpEvent e)
-    //{
-    //    if (e.keyCode == KeyCode.B) // Press 'B' to Buy
-    //    {
-    //        BuyItem();
-    //    }
-    //    else if (e.keyCode == KeyCode.S) // Press 'S' to Sell
-    //    {
-    //        SellItem();
-    //    }
-    //}
-
     private void OnKeyUp(KeyUpEvent e)
     {
         if (e.keyCode == KeyCode.W)
@@ -704,6 +718,21 @@ public class ShopManager : MonoBehaviour
         else if (e.keyCode == KeyCode.D)
         {
             AdjustAmount(1);
+        }
+        else if (e.keyCode == KeyCode.L)
+        {
+            if (!isSellPage)
+            {
+                BuyItem();
+            }
+            else if (isSellPage)
+            {
+                SellItem();
+            }
+        }
+        else if (e.keyCode == KeyCode.K)
+        {
+            // Insert back/cancel button or something here
         }
     }
 
