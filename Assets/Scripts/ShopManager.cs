@@ -38,7 +38,7 @@ public class ShopManager : MonoBehaviour
     private int selectedIndex = 0;
     private int currentAmount = 1;
 
-    bool isSellPage = true;
+    bool isSellPage = false;
 
     // Awake: Ensure correct screen resolution
     private void Awake()
