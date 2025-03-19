@@ -15,6 +15,7 @@ public class ShopManager : MonoBehaviour
     // UI Elements
     private UnityEngine.UIElements.Label _playerMoneyLabel;
     private VisualElement _itemListContainer;
+    private UnityEngine.UIElements.Label _buySellLabel;
 
     // Buttons
     private Button _buyButton;
@@ -55,6 +56,12 @@ public class ShopManager : MonoBehaviour
     {
         // Retrieve the root UI element
         _root = doc.rootVisualElement;
+
+        // Locate the Buy/Sell Label UI element
+        _buySellLabel = _root.Q<UnityEngine.UIElements.Label>("BuySellLabel");
+
+        // Update label based on isSellPage
+        UpdateBuySellLabel();
 
         // Ensure playerInventory is assigned
         if (playerInventory == null)
@@ -843,6 +850,14 @@ public class ShopManager : MonoBehaviour
             currentAmount = 1;
 
         amtLabel.text = currentAmount.ToString("D2");
+    }
+
+    private void UpdateBuySellLabel()
+    {
+        if (_buySellLabel != null)
+        {
+            _buySellLabel.text = isSellPage ? "SELL" : "BUY";
+        }
     }
 
     // ** New Function to Reset Stock **
