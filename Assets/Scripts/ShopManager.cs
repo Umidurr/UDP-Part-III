@@ -34,6 +34,9 @@ public class ShopManager : MonoBehaviour
     private ShopItem _selectedItem;
     private VisualElement _selectedItemSlot; // Stores the currently selected UI element
 
+    private int selectedIndex = 0;
+    private int currentAmount = 1;
+
     // Awake: Ensure correct screen resolution
     private void Awake()
     {
@@ -118,13 +121,70 @@ public class ShopManager : MonoBehaviour
     }
 
 
-    // Populate the shop item list
+    //// Populate the shop item list
+    //private void PopulateShop(List<ShopItem> itemList)
+    //{
+    //    for (int i = 0; i < 6; i++)
+    //    {
+    //        if (i >= itemList.Count) break;
+
+    //        VisualElement itemSlot = _root.Q<VisualElement>($"Item{i + 1}");
+
+    //        if (itemSlot != null)
+    //        {
+    //            UnityEngine.UIElements.Label itemName = itemSlot.Q<UnityEngine.UIElements.Label>($"ItemName{i + 1}");
+    //            UnityEngine.UIElements.Label itemCost = itemSlot.Q<UnityEngine.UIElements.Label>($"ItemCost{i + 1}");
+    //            VisualElement itemPic = itemSlot.Q<VisualElement>($"ItemPic{i + 1}");
+
+    //            ShopItem item = itemList[i];
+
+    //            if (itemName != null) itemName.text = item.itemName;
+    //            if (itemCost != null) itemCost.text = item.isPurchasable ? $"{item.buyPrice}" : "-";
+
+    //            if (itemPic != null && item.itemIcon != null)
+    //            {
+    //                itemPic.style.backgroundImage = new StyleBackground(item.itemIcon);
+    //            }
+
+    //            // Set default background color (Grey - 717171, 212 opacity)
+    //            itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f));
+
+    //            // Set Restricted color (FF6464, 100 opacity) if item is not purchasable
+    //            if (!item.isPurchasable)
+    //            {
+    //                itemSlot.style.backgroundColor = new StyleColor(new Color(1.0f, 0.39f, 0.39f, 100f / 255f)); // FF6464, 100 opacity
+    //            }
+
+    //            // Apply hover effect (Hovered -> 70FFC7, 100 opacity)
+    //            itemSlot.RegisterCallback<MouseEnterEvent>(evt =>
+    //            {
+    //                itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 1.0f, 0.78f, 1.0f)); // 70FFC7, 100 opacity
+    //            });
+
+    //            // Restore previous state on exit
+    //            itemSlot.RegisterCallback<MouseLeaveEvent>(evt =>
+    //            {
+    //                if (!item.isPurchasable)
+    //                {
+    //                    itemSlot.style.backgroundColor = new StyleColor(new Color(1.0f, 0.39f, 0.39f, 100f / 255f)); // FF6464, 100 opacity
+    //                }
+    //                else
+    //                {
+    //                    itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f)); // 717171, 212 opacity
+    //                }
+    //            });
+
+    //            // Attach Click Event to Select the Item
+    //            itemSlot.RegisterCallback<ClickEvent>(evt => SelectItem(item));
+    //        }
+    //    }
+    //}
+
     private void PopulateShop(List<ShopItem> itemList)
     {
         for (int i = 0; i < 6; i++)
         {
             if (i >= itemList.Count) break;
-
             VisualElement itemSlot = _root.Q<VisualElement>($"Item{i + 1}");
 
             if (itemSlot != null)
@@ -143,86 +203,165 @@ public class ShopManager : MonoBehaviour
                     itemPic.style.backgroundImage = new StyleBackground(item.itemIcon);
                 }
 
-                // Set default background color (Grey - 717171, 212 opacity)
                 itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f));
 
-                // Set Restricted color (FF6464, 100 opacity) if item is not purchasable
                 if (!item.isPurchasable)
                 {
-                    itemSlot.style.backgroundColor = new StyleColor(new Color(1.0f, 0.39f, 0.39f, 100f / 255f)); // FF6464, 100 opacity
+                    itemSlot.style.backgroundColor = new StyleColor(new Color(1.0f, 0.39f, 0.39f, 100f / 255f));
                 }
 
-                // Apply hover effect (Hovered -> 70FFC7, 100 opacity)
-                itemSlot.RegisterCallback<MouseEnterEvent>(evt =>
-                {
-                    itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 1.0f, 0.78f, 1.0f)); // 70FFC7, 100 opacity
-                });
-
-                // Restore previous state on exit
-                itemSlot.RegisterCallback<MouseLeaveEvent>(evt =>
-                {
-                    if (!item.isPurchasable)
-                    {
-                        itemSlot.style.backgroundColor = new StyleColor(new Color(1.0f, 0.39f, 0.39f, 100f / 255f)); // FF6464, 100 opacity
-                    }
-                    else
-                    {
-                        itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f)); // 717171, 212 opacity
-                    }
-                });
-
-                // Attach Click Event to Select the Item
                 itemSlot.RegisterCallback<ClickEvent>(evt => SelectItem(item));
             }
         }
     }
 
+    //private void RotateShopItems()
+    //{
+    //    // Check which tab is currently active
+    //    VisualElement itemsHeader = _root.Q<VisualElement>("ITEMS");
+    //    VisualElement equipmentHeader = _root.Q<VisualElement>("EQUIPMENTS");
+
+    //    if (itemsHeader.ClassListContains("active"))
+    //    {
+    //        // Only rotate if there are more than 6 items
+    //        if (shopItems.Count > 6)
+    //        {
+    //            ShopItem firstItem = shopItems[0];
+    //            shopItems.RemoveAt(0);
+    //            shopItems.Add(firstItem);
+
+    //            PopulateShop(shopItems); // Re-populate with rotated list
+    //        }
+    //    }
+    //    else if (equipmentHeader.ClassListContains("active"))
+    //    {
+    //        // Only rotate if there are more than 6 equipment items
+    //        if (equipmentItems.Count > 6)
+    //        {
+    //            ShopItem firstItem = equipmentItems[0];
+    //            equipmentItems.RemoveAt(0);
+    //            equipmentItems.Add(firstItem);
+
+    //            PopulateShop(equipmentItems); // Re-populate with rotated list
+    //        }
+    //    }
+    //}
+
     private void RotateShopItems()
     {
-        // Check which tab is currently active
-        VisualElement itemsHeader = _root.Q<VisualElement>("ITEMS");
-        VisualElement equipmentHeader = _root.Q<VisualElement>("EQUIPMENTS");
-
-        if (itemsHeader.ClassListContains("active"))
+        if (shopItems.Count > 6)
         {
-            // Only rotate if there are more than 6 items
-            if (shopItems.Count > 6)
-            {
-                ShopItem firstItem = shopItems[0];
-                shopItems.RemoveAt(0);
-                shopItems.Add(firstItem);
-
-                PopulateShop(shopItems); // Re-populate with rotated list
-            }
-        }
-        else if (equipmentHeader.ClassListContains("active"))
-        {
-            // Only rotate if there are more than 6 equipment items
-            if (equipmentItems.Count > 6)
-            {
-                ShopItem firstItem = equipmentItems[0];
-                equipmentItems.RemoveAt(0);
-                equipmentItems.Add(firstItem);
-
-                PopulateShop(equipmentItems); // Re-populate with rotated list
-            }
+            ShopItem firstItem = shopItems[0];
+            shopItems.RemoveAt(0);
+            shopItems.Add(firstItem);
+            PopulateShop(shopItems);
         }
     }
 
 
 
-    // Select an item from the list
+    //// Select an item from the list
+    //private void SelectItem(ShopItem item)
+    //{
+    //    _selectedItem = item;
+
+    //    // Find UI Elements for description, stock, and users
+    //    UnityEngine.UIElements.Label itemDesc = _root.Q<UnityEngine.UIElements.Label>("ItemDesc");
+    //    UnityEngine.UIElements.Label itemStock = _root.Q<UnityEngine.UIElements.Label>("StockAmt");
+    //    UnityEngine.UIElements.Label ownedAmount = _root.Q<UnityEngine.UIElements.Label>("OwnedAmt");
+    //    UnityEngine.UIElements.Label moneyTxt = _root.Q<UnityEngine.UIElements.Label>("MoneyTxt");
+    //    UnityEngine.UIElements.Label totalSpaceLabel = _root.Q<UnityEngine.UIElements.Label>("TotalSpace");
+    //    UnityEngine.UIElements.Label spaceAmtLabel = _root.Q<UnityEngine.UIElements.Label>("SpaceAmt");
+
+    //    // Find UI Elements for amount selection
+    //    UnityEngine.UIElements.Label amtLabel = _root.Q<UnityEngine.UIElements.Label>("Amt");
+    //    VisualElement leftArrow = _root.Q<VisualElement>("LeftArrow");
+    //    VisualElement rightArrow = _root.Q<VisualElement>("RightArrow");
+
+    //    // Set initial amount
+    //    int currentAmount = 1;
+
+    //    // If item is restricted, set to 00 and disable arrows
+    //    if (!item.isPurchasable)
+    //    {
+    //        amtLabel.text = "00";
+    //        leftArrow.SetEnabled(false);
+    //        rightArrow.SetEnabled(false);
+    //        return;
+    //    }
+
+    //    // Ensure arrows are enabled if item is purchasable
+    //    leftArrow.SetEnabled(true);
+    //    rightArrow.SetEnabled(true);
+
+    //    // Set default value to 01
+    //    amtLabel.text = "01";
+
+    //    // Register Click Events for Left and Right Arrows
+    //    leftArrow.RegisterCallback<ClickEvent>(evt =>
+    //    {
+    //        if (currentAmount == 1)
+    //        {
+    //            currentAmount = 99; // Loop to 99 if at 01
+    //        }
+    //        else
+    //        {
+    //            currentAmount--;
+    //        }
+    //        amtLabel.text = currentAmount.ToString("D2"); // Format as 2-digit
+    //    });
+
+    //    rightArrow.RegisterCallback<ClickEvent>(evt =>
+    //    {
+    //        if (currentAmount == 99)
+    //        {
+    //            currentAmount = 1; // Reset to 01 if at 99
+    //        }
+    //        else
+    //        {
+    //            currentAmount++;
+    //        }
+    //        amtLabel.text = currentAmount.ToString("D2"); // Format as 2-digit
+    //    });
+
+    //    // Show the selected item's details
+    //    if (itemDesc != null) itemDesc.text = item.description;
+    //    if (itemStock != null) itemStock.text = $"{item.stock}";
+
+    //    // Retrieve owned amount from PlayerInventory
+    //    int playerOwned = playerInventory.GetOwnedAmount(item);
+    //    if (ownedAmount != null) ownedAmount.text = $"{playerOwned}";
+    //    if (ownedAmount == null)
+    //    {
+    //        UnityEngine.Debug.LogError("No owned.");
+    //    }
+
+    //    // Update money display
+    //    if (moneyTxt != null) moneyTxt.text = $"{playerInventory.money}";
+
+    //    // Update inventory space display
+    //    if (totalSpaceLabel != null) totalSpaceLabel.text = $"/{playerInventory.totalSpace}";
+    //    if (spaceAmtLabel != null) spaceAmtLabel.text = $"{playerInventory.GetUsedSpace()}";
+
+    //    // Update user usability visuals
+    //    VisualElement randiIcon = _root.Q<VisualElement>("Randi");
+    //    VisualElement purimIcon = _root.Q<VisualElement>("Purim");
+    //    VisualElement popoiIcon = _root.Q<VisualElement>("Popoi");
+
+    //    if (randiIcon != null)
+    //        randiIcon.style.opacity = item.allowedUsers.Contains(UserType.Randi) ? 1f : 0f;
+    //    if (purimIcon != null)
+    //        purimIcon.style.opacity = item.allowedUsers.Contains(UserType.Purim) ? 1f : 0f;
+    //    if (popoiIcon != null)
+    //        popoiIcon.style.opacity = item.allowedUsers.Contains(UserType.Popoi) ? 1f : 0f;
+    //}
+
     private void SelectItem(ShopItem item)
     {
         _selectedItem = item;
 
-        // Find UI Elements for description, stock, and users
-        UnityEngine.UIElements.Label itemDesc = _root.Q<UnityEngine.UIElements.Label>("ItemDesc");
-        UnityEngine.UIElements.Label itemStock = _root.Q<UnityEngine.UIElements.Label>("StockAmt");
-        UnityEngine.UIElements.Label ownedAmount = _root.Q<UnityEngine.UIElements.Label>("OwnedAmt");
-        UnityEngine.UIElements.Label moneyTxt = _root.Q<UnityEngine.UIElements.Label>("MoneyTxt");
-        UnityEngine.UIElements.Label totalSpaceLabel = _root.Q<UnityEngine.UIElements.Label>("TotalSpace");
-        UnityEngine.UIElements.Label spaceAmtLabel = _root.Q<UnityEngine.UIElements.Label>("SpaceAmt");
+        // Update Selected Item UI
+        UpdateSelectedItemVisuals();
 
         // Find UI Elements for amount selection
         UnityEngine.UIElements.Label amtLabel = _root.Q<UnityEngine.UIElements.Label>("Amt");
@@ -230,7 +369,7 @@ public class ShopManager : MonoBehaviour
         VisualElement rightArrow = _root.Q<VisualElement>("RightArrow");
 
         // Set initial amount
-        int currentAmount = 1;
+        currentAmount = 1;
 
         // If item is restricted, set to 00 and disable arrows
         if (!item.isPurchasable)
@@ -247,64 +386,53 @@ public class ShopManager : MonoBehaviour
 
         // Set default value to 01
         amtLabel.text = "01";
+    }
 
-        // Register Click Events for Left and Right Arrows
-        leftArrow.RegisterCallback<ClickEvent>(evt =>
+    // ** Function to update selected item visual ** //
+    private void UpdateSelectedItemVisuals()
+    {
+        for (int i = 0; i < 6; i++)
         {
-            if (currentAmount == 1)
+            VisualElement itemSlot = _root.Q<VisualElement>($"Item{i + 1}");
+            if (itemSlot != null)
             {
-                currentAmount = 99; // Loop to 99 if at 01
-            }
-            else
-            {
-                currentAmount--;
-            }
-            amtLabel.text = currentAmount.ToString("D2"); // Format as 2-digit
-        });
+                ShopItem item = shopItems[i];
 
-        rightArrow.RegisterCallback<ClickEvent>(evt =>
-        {
-            if (currentAmount == 99)
-            {
-                currentAmount = 1; // Reset to 01 if at 99
+                // Set highlight color if selected
+                if (i == selectedIndex)
+                {
+                    itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 1.0f, 0.78f, 1.0f)); // 70FFC7, 100% opacity
+                    UpdateItemDetails(item); // Update labels
+                }
+                else if (!item.isPurchasable)
+                {
+                    itemSlot.style.backgroundColor = new StyleColor(new Color(1.0f, 0.39f, 0.39f, 100f / 255f)); // FF6464 (Restricted)
+                }
+                else
+                {
+                    itemSlot.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f)); // Default Grey
+                }
             }
-            else
-            {
-                currentAmount++;
-            }
-            amtLabel.text = currentAmount.ToString("D2"); // Format as 2-digit
-        });
+        }
+    }
 
-        // Show the selected item's details
+    private void UpdateItemDetails(ShopItem item)
+    {
+        // Find UI Elements
+        UnityEngine.UIElements.Label itemDesc = _root.Q<UnityEngine.UIElements.Label>("ItemDesc");
+        UnityEngine.UIElements.Label itemStock = _root.Q<UnityEngine.UIElements.Label>("StockAmt");
+        UnityEngine.UIElements.Label ownedAmount = _root.Q<UnityEngine.UIElements.Label>("OwnedAmt");
+        UnityEngine.UIElements.Label moneyTxt = _root.Q<UnityEngine.UIElements.Label>("MoneyTxt");
+        UnityEngine.UIElements.Label totalSpaceLabel = _root.Q<UnityEngine.UIElements.Label>("TotalSpace");
+        UnityEngine.UIElements.Label spaceAmtLabel = _root.Q<UnityEngine.UIElements.Label>("SpaceAmt");
+
+        // Update UI Labels
         if (itemDesc != null) itemDesc.text = item.description;
         if (itemStock != null) itemStock.text = $"{item.stock}";
-
-        // Retrieve owned amount from PlayerInventory
-        int playerOwned = playerInventory.GetOwnedAmount(item);
-        if (ownedAmount != null) ownedAmount.text = $"{playerOwned}";
-        if (ownedAmount == null)
-        {
-            UnityEngine.Debug.LogError("No owned.");
-        }
-
-        // Update money display
+        if (ownedAmount != null) ownedAmount.text = $"{playerInventory.GetOwnedAmount(item)}";
         if (moneyTxt != null) moneyTxt.text = $"{playerInventory.money}";
-
-        // Update inventory space display
         if (totalSpaceLabel != null) totalSpaceLabel.text = $"/{playerInventory.totalSpace}";
         if (spaceAmtLabel != null) spaceAmtLabel.text = $"{playerInventory.GetUsedSpace()}";
-
-        // Update user usability visuals
-        VisualElement randiIcon = _root.Q<VisualElement>("Randi");
-        VisualElement purimIcon = _root.Q<VisualElement>("Purim");
-        VisualElement popoiIcon = _root.Q<VisualElement>("Popoi");
-
-        if (randiIcon != null)
-            randiIcon.style.opacity = item.allowedUsers.Contains(UserType.Randi) ? 1f : 0f;
-        if (purimIcon != null)
-            purimIcon.style.opacity = item.allowedUsers.Contains(UserType.Purim) ? 1f : 0f;
-        if (popoiIcon != null)
-            popoiIcon.style.opacity = item.allowedUsers.Contains(UserType.Popoi) ? 1f : 0f;
     }
 
     private void SetupHeaders()
@@ -546,17 +674,84 @@ public class ShopManager : MonoBehaviour
         if (spaceAmtLabel != null) spaceAmtLabel.text = $"{playerInventory.GetUsedSpace()}";
     }
 
-    // Handle keyboard shortcuts
+    //// Handle keyboard shortcuts
+    //private void OnKeyUp(KeyUpEvent e)
+    //{
+    //    if (e.keyCode == KeyCode.B) // Press 'B' to Buy
+    //    {
+    //        BuyItem();
+    //    }
+    //    else if (e.keyCode == KeyCode.S) // Press 'S' to Sell
+    //    {
+    //        SellItem();
+    //    }
+    //}
+
     private void OnKeyUp(KeyUpEvent e)
     {
-        if (e.keyCode == KeyCode.B) // Press 'B' to Buy
+        if (e.keyCode == KeyCode.W)
         {
-            BuyItem();
+            NavigateUp();
         }
-        else if (e.keyCode == KeyCode.S) // Press 'S' to Sell
+        else if (e.keyCode == KeyCode.S)
         {
-            SellItem();
+            NavigateDown();
         }
+        else if (e.keyCode == KeyCode.A)
+        {
+            AdjustAmount(-1);
+        }
+        else if (e.keyCode == KeyCode.D)
+        {
+            AdjustAmount(1);
+        }
+    }
+
+    private void NavigateUp()
+    {
+        if (selectedIndex > 0)
+        {
+            selectedIndex--;
+        }
+        else
+        {
+            RotateShopItems();
+        }
+        SelectItem(shopItems[selectedIndex]);
+    }
+
+    private void NavigateDown()
+    {
+        if (selectedIndex < 5 && selectedIndex < shopItems.Count - 1)
+        {
+            selectedIndex++;
+        }
+        else
+        {
+            RotateShopItems();
+        }
+        SelectItem(shopItems[selectedIndex]);
+    }
+
+    private void AdjustAmount(int change)
+    {
+        UnityEngine.UIElements.Label amtLabel = _root.Q<UnityEngine.UIElements.Label>("Amt");
+        if (_selectedItem == null || amtLabel == null) return;
+
+        if (!_selectedItem.isPurchasable)
+        {
+            amtLabel.text = "00";
+            return;
+        }
+
+        currentAmount += change;
+
+        if (currentAmount < 1)
+            currentAmount = 99;
+        else if (currentAmount > 99)
+            currentAmount = 1;
+
+        amtLabel.text = currentAmount.ToString("D2");
     }
 
     // ** New Function to Reset Stock **
