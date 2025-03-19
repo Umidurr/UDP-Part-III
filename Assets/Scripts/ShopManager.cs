@@ -248,6 +248,57 @@ public class ShopManager : MonoBehaviour
         UnityEngine.UIElements.Label totalSpaceLabel = _root.Q<UnityEngine.UIElements.Label>("TotalSpace");
         UnityEngine.UIElements.Label spaceAmtLabel = _root.Q<UnityEngine.UIElements.Label>("SpaceAmt");
 
+        // Find UI Elements for amount selection
+        UnityEngine.UIElements.Label amtLabel = _root.Q<UnityEngine.UIElements.Label>("Amt");
+        VisualElement leftArrow = _root.Q<VisualElement>("LeftArrow");
+        VisualElement rightArrow = _root.Q<VisualElement>("RightArrow");
+
+        // Set initial amount
+        int currentAmount = 1;
+
+        // If item is restricted, set to 00 and disable arrows
+        if (!item.isPurchasable)
+        {
+            amtLabel.text = "00";
+            leftArrow.SetEnabled(false);
+            rightArrow.SetEnabled(false);
+            return;
+        }
+
+        // Ensure arrows are enabled if item is purchasable
+        leftArrow.SetEnabled(true);
+        rightArrow.SetEnabled(true);
+
+        // Set default value to 01
+        amtLabel.text = "01";
+
+        // Register Click Events for Left and Right Arrows
+        leftArrow.RegisterCallback<ClickEvent>(evt =>
+        {
+            if (currentAmount == 1)
+            {
+                currentAmount = 99; // Loop to 99 if at 01
+            }
+            else
+            {
+                currentAmount--;
+            }
+            amtLabel.text = currentAmount.ToString("D2"); // Format as 2-digit
+        });
+
+        rightArrow.RegisterCallback<ClickEvent>(evt =>
+        {
+            if (currentAmount == 99)
+            {
+                currentAmount = 1; // Reset to 01 if at 99
+            }
+            else
+            {
+                currentAmount++;
+            }
+            amtLabel.text = currentAmount.ToString("D2"); // Format as 2-digit
+        });
+
         // Show the selected item's details
         if (itemDesc != null) itemDesc.text = item.description;
         if (itemStock != null) itemStock.text = $"{item.stock}";
