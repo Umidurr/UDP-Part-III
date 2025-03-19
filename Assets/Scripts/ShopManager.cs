@@ -140,6 +140,13 @@ public class ShopManager : MonoBehaviour
         SetupHeaders();
     }
 
+    private void ToggleBuySellMode()
+    {
+        isSellPage = !isSellPage; // Toggle mode between Buy and Sell
+        UpdateBuySellLabel();
+        PopulateShop(GetActiveShopList()); // Refresh shop to display correct prices
+    }
+
 
     private void PopulateShop(List<ShopItem> itemList)
     {
