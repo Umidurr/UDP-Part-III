@@ -373,8 +373,8 @@ public class ShopManager : MonoBehaviour
     {
         _selectedItem = item;
 
-        // ** Set selected index based on the item's position in shopItems **
-        selectedIndex = shopItems.IndexOf(item);
+        //// ** Set selected index based on the item's position in shopItems **
+        //selectedIndex = shopItems.IndexOf(item);
 
         // Update Selected Item UI
         UpdateSelectedItemVisuals();
@@ -843,7 +843,6 @@ public class ShopManager : MonoBehaviour
 
         SelectItem(activeShopList[selectedIndex]);
     }
-
 
     private void AdjustAmount(int change)
     {
