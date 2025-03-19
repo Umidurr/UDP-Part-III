@@ -417,7 +417,7 @@ public class ShopManager : MonoBehaviour
         UnityEngine.UIElements.Label totalSpaceLabel = _root.Q<UnityEngine.UIElements.Label>("TotalSpace");
         UnityEngine.UIElements.Label spaceAmtLabel = _root.Q<UnityEngine.UIElements.Label>("SpaceAmt");
 
-        if (totalSpaceLabel != null) totalSpaceLabel.text = $"{playerInventory.totalSpace}";
+        if (totalSpaceLabel != null) totalSpaceLabel.text = $"/{playerInventory.totalSpace}";
         if (spaceAmtLabel != null) spaceAmtLabel.text = $"{playerInventory.GetUsedSpace()}";
     }
 

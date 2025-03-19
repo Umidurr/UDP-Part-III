@@ -86,4 +86,10 @@ public class PlayerInventory : MonoBehaviour
         return usedSpace;
     }
 
+    public int GetRemainingSpace()
+    {
+        return totalSpace - GetUsedSpace();
+    }
+
+
 }
