@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection.Emit;
 using UnityEngine;
@@ -445,16 +445,56 @@ public class ShopManager : MonoBehaviour
     // Sell an item
     private void SellItem()
     {
-        if (_selectedItem == null) return;
+        if (_selectedItem == null) return; // No item selected
 
-        if (playerInventory.HasItem(_selectedItem))
+        // Get UI elements
+        UnityEngine.UIElements.Label ownedAmountLabel = _root.Q<UnityEngine.UIElements.Label>("OwnedAmt");
+        UnityEngine.UIElements.Label amtLabel = _root.Q<UnityEngine.UIElements.Label>("Amt");
+
+        // Get the selected amount from the UI (convert from string to int)
+        int sellAmount = int.Parse(amtLabel.text);
+
+        // Get the player's owned quantity from inventory
+        int ownedQuantity = playerInventory.GetOwnedAmount(_selectedItem);
+
+        // Prevent selling if the player doesn't own enough
+        if (ownedQuantity < sellAmount || sellAmount <= 0)
         {
-            playerInventory.money += _selectedItem.sellPrice;
-            playerInventory.RemoveItem(_selectedItem);
-            UpdateMoneyDisplay();
-            UnityEngine.Debug.LogError("Sold: " + _selectedItem.itemName);
+            UnityEngine.Debug.LogWarning($"Cannot sell {sellAmount}x {_selectedItem.itemName}. You only own {ownedQuantity}.");
+            return;
         }
+
+        // Calculate total sell price
+        int totalSellPrice = _selectedItem.sellPrice * sellAmount;
+
+        // Add money to player's inventory
+        playerInventory.money += totalSellPrice;
+
+        // Remove the sold amount from inventory
+        for (int i = 0; i < sellAmount; i++)
+        {
+            playerInventory.RemoveItem(_selectedItem);
+        }
+
+        // Update UI
+        UpdateMoneyDisplay();
+        UpdateInventoryDisplay();
+
+        // Get the new owned quantity after selling
+        int newOwnedQuantity = playerInventory.GetOwnedAmount(_selectedItem);
+
+        // ✅ Update the OwnedAmt label in real-time
+        if (ownedAmountLabel != null)
+        {
+            ownedAmountLabel.text = $"{newOwnedQuantity}";
+        }
+
+        // ✅ Do **NOT** reset `Amt` — keep it the same
+        UnityEngine.Debug.Log($"Sold {sellAmount}x {_selectedItem.itemName} for {totalSellPrice}. Remaining: {newOwnedQuantity}");
     }
+
+
+
 
     // Update the UI display of player money
     private void UpdateMoneyDisplay()

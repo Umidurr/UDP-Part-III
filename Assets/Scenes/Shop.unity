@@ -500,6 +500,18 @@ MonoBehaviour:
     quantity: 1
   - item: {fileID: 11400000, guid: d363241f6f7588e43bd9485e9b973b4f, type: 2}
     quantity: 1
+  - item: {fileID: 11400000, guid: a2bdf9fd6e870034ab58501d5125daa6, type: 2}
+    quantity: 2
+  - item: {fileID: 11400000, guid: 394e892a7b44d5b46b4dc9894d8c3be2, type: 2}
+    quantity: 2
+  - item: {fileID: 11400000, guid: 5c7d31da52e9ad844bdc8820ebee0511, type: 2}
+    quantity: 3
+  - item: {fileID: 11400000, guid: d4ef5b5114238724f81dbed07daaa30b, type: 2}
+    quantity: 2
+  - item: {fileID: 11400000, guid: 14d986dfe9b5e1a40b8693db0a5ddf68, type: 2}
+    quantity: 1
+  - item: {fileID: 11400000, guid: 1d37b0a4388814047b307056015a45b1, type: 2}
+    quantity: 1
 --- !u!1 &1126553417
 GameObject:
   m_ObjectHideFlags: 0
