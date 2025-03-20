@@ -13,6 +13,7 @@ public class DialogueManager : MonoBehaviour
     public float interactionDistance = 1.5f; // Distance required to interact
 
     private VisualElement _root;
+    private VisualElement buySellBox;
 
     private UnityEngine.UIElements.Label _dialogueLabel;
     private UnityEngine.UIElements.Label buyLabel;
@@ -26,7 +27,7 @@ public class DialogueManager : MonoBehaviour
 
     public ShopManager shopManager;
 
-    private bool isDialogueActive = false; // Track if dialogue is currently shown
+    public bool isDialogueActive = false; // Track if dialogue is currently shown
 
     private void Start()
     {
@@ -43,6 +44,8 @@ public class DialogueManager : MonoBehaviour
         buyLabel = _root.Q<UnityEngine.UIElements.Label>("BuyTxt");
         sellLabel = _root.Q<UnityEngine.UIElements.Label>("SellTxt");
 
+        buySellBox = _root.Q<VisualElement>("BuySellBox");
+
         // Ensure shopManager is assigned
         if (shopManager == null)
         {
@@ -56,10 +59,6 @@ public class DialogueManager : MonoBehaviour
 
         // Register keyboard input for the dialogue
         _root.RegisterCallback<KeyUpEvent>(OnKeyUp);
-
-        // Allow the root UI element to be focusable
-        _root.focusable = true;
-        _root.Focus();
     }
 
     private void Update()
@@ -67,7 +66,8 @@ public class DialogueManager : MonoBehaviour
         // Check if player is close enough to interact
         if (!isDialogueActive && Vector2.Distance(player.position, merchant.position) < interactionDistance)
         {
-            if (Input.GetKeyDown(KeyCode.L))
+            // Y key - open dialogue
+            if (Input.GetKeyDown(KeyCode.I))
             {
                 ShowDialogue();
             }
@@ -77,6 +77,8 @@ public class DialogueManager : MonoBehaviour
     private void ShowDialogue()
     {
         dialogueUI.rootVisualElement.style.display = DisplayStyle.Flex; // Show Dialogue UI
+        buySellBox.style.opacity = 1f;
+
         isDialogueActive = true;
 
         _dialogueLabel.text = "Ah-ha! A customer!\nWhat would you like to do today?";
@@ -109,10 +111,15 @@ public class DialogueManager : MonoBehaviour
             {
                 OpenShop();
             }
+            // L key - confirm the selection (Buy/Sell)
+            else if (e.keyCode == KeyCode.K)
+            {
+                CloseDialogue();
+            }
         }
     }
 
-    void UpdateSelection()
+    private void UpdateSelection()
     {
         if (currentSelection == Selection.Buy)
         {
@@ -126,7 +133,7 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    void OpenShop()
+    private void OpenShop()
     {
         if (shopUI != null)
         {
@@ -134,6 +141,25 @@ public class DialogueManager : MonoBehaviour
         }
 
         _root.style.display = DisplayStyle.None; // Hide Dialogue UI
-        isDialogueActive = false; // Reset dialogue state
+    }
+
+    private void HideDialogue()
+    {
+        dialogueUI.rootVisualElement.style.display = DisplayStyle.None; // Hide Dialogue UI
+    }
+
+    private void CloseDialogue()
+    {
+        _dialogueLabel.text = "Thank you! See you again soon!";
+
+        if (buySellBox != null)
+        {
+            buySellBox.style.opacity = 0f; // 0% opacity
+        }
+
+        // Hide the dialogue after 2 seconds
+        Invoke(nameof(HideDialogue), 2f);
+
+        isDialogueActive = false;
     }
 }

@@ -8,18 +8,38 @@ public class PlayerMovement : MonoBehaviour
 
     public SpriteRenderer spriteRenderer; // Reference to the Sprite Renderer
     public Sprite spriteFacingDown; 
-    public Sprite spriteFacingUp;  
+    public Sprite spriteFacingUp;
+
+    public DialogueManager dialogueManager; // Reference to the Dialogue Manager
+
+    private void start()
+    {
+        // Ensure dialogueManager is assigned
+        if (dialogueManager == null)
+        {
+            dialogueManager = FindFirstObjectByType<DialogueManager>();
+            if (dialogueManager == null)
+            {
+                UnityEngine.Debug.LogError("PlayerMovement: dialogueManager is missing in the scene!");
+                return; // Prevent further execution if missing
+            }
+        }
+    }
 
     private void Update()
     {
+        // Prevent movement if dialogue is active
+        if (dialogueManager.isDialogueActive) return;
+
         Vector3 moveDirection = Vector3.zero;
 
-        if (Input.GetKey(KeyCode.W)) 
+        if (Input.GetKey(KeyCode.W))
         {
             moveDirection.y = 1;
             spriteRenderer.sprite = spriteFacingUp; // Change to back sprite
         }
-        else if (Input.GetKey(KeyCode.S)) 
+        
+        if (Input.GetKey(KeyCode.S))
         {
             moveDirection.y = -1;
             spriteRenderer.sprite = spriteFacingDown; // Change to front sprite
