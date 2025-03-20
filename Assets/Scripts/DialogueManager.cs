@@ -1,9 +1,12 @@
-﻿using UnityEngine;
+﻿using System.Diagnostics;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 public class DialogueManager : MonoBehaviour
 {
-    public UIDocument doc;
+    public UIDocument dialogueUI;
+    public UIDocument shopUI;
+
     private VisualElement _root;
 
     private UnityEngine.UIElements.Label _dialogueLabel;
@@ -18,42 +21,38 @@ public class DialogueManager : MonoBehaviour
         Buy, 
         Sell 
     }
-
     private Selection currentSelection = Selection.Buy;
 
-    private Button _continueButton;
-
-    private int selectedOption = 0; // 0: Buy, 1: Sell
-    private bool isDialogueActive = false;
+    private bool shopOpened = false;
 
     // Reference to ShopManager (to toggle Buy/Sell mode)
-    //public ShopManager shopManager;
+    public ShopManager shopManager;
 
     private void Start()
     {
-        // Check if doc or shopManager is null
-        if (doc == null)
-        {
-            Debug.LogError("UIDocument reference is missing!");
-        }
-        //if (shopManager == null)
+        _root = dialogueUI.rootVisualElement;
+
+        //ShopManager shopScript = FindFirstObjectByType<ShopManager>();
+
+        //if (shopScript != null)
         //{
-        //    Debug.LogError("ShopManager reference is missing!");
+        //    shopScript.gameObject.SetActive(false); // Disable its GameObject
+        //}
+        //else
+        //{
+        //    UnityEngine.Debug.LogError("ShopManager script is missing in the scene!");
         //}
 
-        _root = doc.rootVisualElement;
+        // Ensure Shop UI is hidden at the start
+        if (shopUI != null)
+            shopUI.rootVisualElement.style.display = DisplayStyle.None;
 
-        // Check if _root was initialized
-        if (_root == null)
-        {
-            Debug.LogError("Root VisualElement is null!");
-        }
+        // Ensure Dialogue UI is visible at the start
+        dialogueUI.rootVisualElement.style.display = DisplayStyle.Flex;
 
         _dialogueLabel = _root.Q<UnityEngine.UIElements.Label>("StartingTxt");
         buyLabel = _root.Q<UnityEngine.UIElements.Label>("BuyTxt");
         sellLabel = _root.Q<UnityEngine.UIElements.Label>("SellTxt");
-
-        //_continueButton = _root.Q<Button>("ContinueButton");
 
         // Start the dialogue with the options immediately
         StartDialogue("Ah-ha! A customer!\nWhat would you like to do today?aaaa");
@@ -67,12 +66,11 @@ public class DialogueManager : MonoBehaviour
     {
         _dialogueLabel.text = message;
         _root.style.display = DisplayStyle.Flex; // Show the dialogue UI
-        isDialogueActive = true;
     }
 
     private void OnKeyUp(KeyUpEvent e)
     {
-        if (isDialogueActive)
+        if (!shopOpened)
         {
             // W key - move up (Buy option)
             if (e.keyCode == KeyCode.W)
@@ -86,12 +84,11 @@ public class DialogueManager : MonoBehaviour
                 currentSelection = Selection.Sell;
                 UpdateSelection();
             }
-
-            //// L key - confirm the selection (Buy/Sell)
-            //else if (e.keyCode == KeyCode.L)
-            //{
-            //    //ConfirmDialogueSelection();
-            //}
+            // L key - confirm the selection (Buy/Sell)
+            else if (e.keyCode == KeyCode.L)
+            {
+                OpenShop();
+            }
         }
     }
 
@@ -109,22 +106,14 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    //private void ConfirmDialogueSelection()
-    //{
-    //    // Hide the dialogue UI
-    //    _root.style.display = DisplayStyle.None;
-    //    isDialogueActive = false;
+    void OpenShop()
+    {
+        if (shopUI != null)
+        {
+            shopUI.rootVisualElement.style.display = DisplayStyle.Flex; // Show Shop UI
+        }
 
-    //    // Trigger Buy/Sell mode in the ShopManager based on the selection
-    //    if (selectedOption == 0)
-    //    {
-    //        shopManager.ToggleBuySellMode(); // Set to Buy mode
-    //    }
-    //    else if (selectedOption == 1)
-    //    {
-    //        shopManager.ToggleBuySellMode(); // Set to Sell mode
-    //    }
-
-    //    // Optionally, you can also add logic to reset the UI or add transitions before the shop UI opens.
-    //}
+        _root.style.display = DisplayStyle.None; // Hide Dialogue UI
+        shopOpened = true; // Prevent further navigation
+    }
 }
