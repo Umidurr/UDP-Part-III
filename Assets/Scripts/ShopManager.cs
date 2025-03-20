@@ -16,6 +16,7 @@ public class ShopManager : MonoBehaviour
     private UnityEngine.UIElements.Label _playerMoneyLabel;
     private VisualElement _itemListContainer;
     private UnityEngine.UIElements.Label _buySellLabel;
+    private UnityEngine.UIElements.Label _dialogueText;
 
     // Buttons
     private Button _buyButton;
@@ -135,9 +136,10 @@ public class ShopManager : MonoBehaviour
             Invoke("UpdateSelectedItemVisuals", 0.1f);
         }
 
-
-        // ** Add Header Selection and Hover Effects**
+        // Add Header Selection and Hover Effects
         SetupHeaders();
+
+        _dialogueText = _root.Q<UnityEngine.UIElements.Label>("DialogueTxt");
     }
 
     public void ToggleBuySellMode()
@@ -422,6 +424,7 @@ public class ShopManager : MonoBehaviour
         // Check if item is purchasable
         if (!_selectedItem.isPurchasable)
         {
+            _dialogueText.text = "This item cannot be purchased!\nIt is restricted!!";
             UnityEngine.Debug.LogError("This item cannot be purchased!");
             return;
         }
@@ -429,6 +432,7 @@ public class ShopManager : MonoBehaviour
         // Check stock availability
         if (_selectedItem.stock == 0)
         {
+            _dialogueText.text = "I'm sorry, we are Out of Stock!\nMaybe another time?";
             UnityEngine.Debug.LogError("Out of stock! Cannot purchase.");
             return;
         }
@@ -436,6 +440,7 @@ public class ShopManager : MonoBehaviour
         // Ensure we do not buy more than available stock
         if (amountToBuy > _selectedItem.stock)
         {
+            _dialogueText.text = "So sorry! We only have " + _selectedItem.stock + " left\nfor you to purchase..";
             UnityEngine.Debug.LogError("Not enough stock available for this purchase!");
             return;
         }
@@ -444,6 +449,7 @@ public class ShopManager : MonoBehaviour
         int remainingSpace = playerInventory.GetRemainingSpace();
         if (amountToBuy > remainingSpace)
         {
+            _dialogueText.text = "You do not have enough space in your inventory!";
             UnityEngine.Debug.LogError("Not enough space in inventory!");
             return;
         }
@@ -454,6 +460,7 @@ public class ShopManager : MonoBehaviour
             UserType currentPlayer = playerInventory.GetCurrentPlayer();
             if (!_selectedItem.allowedUsers.Contains(currentPlayer))
             {
+                _dialogueText.text = "You are not allowed to use this equipment!!";
                 UnityEngine.Debug.LogError("You are not allowed to use this equipment!");
                 return;
             }
@@ -463,7 +470,14 @@ public class ShopManager : MonoBehaviour
         int totalCost = _selectedItem.buyPrice * amountToBuy;
         if (playerInventory.money < totalCost)
         {
+            _dialogueText.text = "Uhm, sorry sir, you..\ndo not have enough money..";
             UnityEngine.Debug.LogError("Not enough money!");
+            return;
+        }
+
+        if (amountToBuy == 0)
+        {
+            _dialogueText.text = "Sir, you did not pick how many\nyou would like to purchase..";
             return;
         }
 
@@ -477,6 +491,7 @@ public class ShopManager : MonoBehaviour
         UpdateInventoryDisplay();
         SelectItem(_selectedItem); // Refresh UI to show new stock count
 
+        _dialogueText.text = "You have successfully bought " + amountToBuy + "x " + _selectedItem.itemName + "!\nEnjoy!";
         UnityEngine.Debug.Log($"Purchased {amountToBuy}x {_selectedItem.itemName}");
     }
 
@@ -490,6 +505,7 @@ public class ShopManager : MonoBehaviour
         // **Prevent selling if item is not purchasable (restricted items)**
         if (!_selectedItem.isPurchasable)
         {
+            _dialogueText.text = "You have cannot sell " + _selectedItem.itemName + "!\nIt is restricted!!";
             UnityEngine.Debug.LogError($"Cannot sell {_selectedItem.itemName}, it is restricted.");
             return;
         }
@@ -507,6 +523,7 @@ public class ShopManager : MonoBehaviour
         // Prevent selling if the player doesn't own enough
         if (ownedQuantity < sellAmount || sellAmount <= 0)
         {
+            _dialogueText.text = "You have cannot sell " + sellAmount + "x " + _selectedItem.itemName + "!\nYou only own" + ownedQuantity + "!!";
             UnityEngine.Debug.LogWarning($"Cannot sell {sellAmount}x {_selectedItem.itemName}. You only own {ownedQuantity}.");
             return;
         }
@@ -536,6 +553,7 @@ public class ShopManager : MonoBehaviour
             ownedAmountLabel.text = $"{newOwnedQuantity}";
         }
 
+        _dialogueText.text = "You have successfully sold " + sellAmount + "x " + _selectedItem.itemName + "\nfor" + totalSellPrice + "You are now left with" + newOwnedQuantity + "!!";
         UnityEngine.Debug.Log($"Sold {sellAmount}x {_selectedItem.itemName} for {totalSellPrice}. Remaining: {newOwnedQuantity}");
     }
 

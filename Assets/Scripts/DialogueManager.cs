@@ -40,7 +40,7 @@ public class DialogueManager : MonoBehaviour
         sellLabel = _root.Q<UnityEngine.UIElements.Label>("SellTxt");
 
         // Start the dialogue with the options immediately
-        StartDialogue("Ah-ha! A customer!\nWhat would you like to do today?aaaa");
+        StartDialogue("Ah-ha! A customer!\nWhat would you like to do today?");
 
         // Register keyboard input for the dialogue
         _root.RegisterCallback<KeyUpEvent>(OnKeyUp);
