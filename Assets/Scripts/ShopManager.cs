@@ -223,6 +223,22 @@ public class ShopManager : MonoBehaviour
         _selectedItem = item;
         selectedIndex = GetActiveShopList().IndexOf(item); // Get correct index from active list
 
+        // Reset amount selection when navigating
+        UnityEngine.UIElements.Label amtLabel = _root.Q<UnityEngine.UIElements.Label>("Amt");
+        if (amtLabel != null)
+        {
+            if (!_selectedItem.isPurchasable)
+            {
+                amtLabel.text = "00"; // Restricted items should show 00
+                currentAmount = 0;
+            }
+            else
+            {
+                amtLabel.text = "01"; // Reset amount back to 1 for other items
+                currentAmount = 1;
+            }
+        }
+
         // Update visuals & UI
         UpdateSelectedItemVisuals();
         UpdateItemDetails(item);
