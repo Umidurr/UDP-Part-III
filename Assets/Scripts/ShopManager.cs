@@ -83,18 +83,6 @@ public class ShopManager : MonoBehaviour
         _playerMoneyLabel = _root.Q<UnityEngine.UIElements.Label>("MoneyTxt");
         _itemListContainer = _root.Q<VisualElement>("ITEMS");
 
-        // Find and assign buttons
-        // Find and assign Buy button from UI
-        VisualElement buyButton = _root.Q<VisualElement>("BUYSELL");
-        if (buyButton != null)
-        {
-            buyButton.RegisterCallback<ClickEvent>(evt => BuyItem());
-        }
-        else
-        {
-            UnityEngine.Debug.LogError("Buy button not found in UI!");
-        }
-
         _sellButton = _root.Q<Button>("SellButton");
 
         // Register button events
@@ -107,13 +95,6 @@ public class ShopManager : MonoBehaviour
 
         if (itemDesc != null) itemDesc.text = ""; // Ensure it's empty on start
         if (itemStock != null) itemStock.text = ""; // Hide stock count initially
-
-        // Find the arrow-down element
-        var arrowDown = _root.Q<VisualElement>("ArrowDown");
-        if (arrowDown != null)
-        {
-            arrowDown.RegisterCallback<ClickEvent>(evt => RotateShopItems());
-        }
 
         // Register keyboard shortcuts
         _root.RegisterCallback<KeyUpEvent>(OnKeyUp);
@@ -194,7 +175,6 @@ public class ShopManager : MonoBehaviour
                         itemSlot.style.backgroundColor = new StyleColor(new Color(1.0f, 0.39f, 0.39f, 100f / 255f)); // Mark restricted items
                     }
 
-                    itemSlot.RegisterCallback<ClickEvent>(evt => SelectItem(item));
                 }
             }
         }
@@ -325,23 +305,8 @@ public class ShopManager : MonoBehaviour
         VisualElement itemBackCover = _root.Q<VisualElement>("ItemBackCover");
         VisualElement eqBackCover = _root.Q<VisualElement>("EQBackCover");
 
-        // Get child elements that might be intercepting input
-        VisualElement itemText = _root.Q<VisualElement>("ItemTxt");
-        VisualElement eqText = _root.Q<VisualElement>("EqTxt");
-        VisualElement itemRect = _root.Q<VisualElement>("ItemRect");
-        VisualElement eqRect = _root.Q<VisualElement>("EQRect");
-
         if (itemsHeader != null && equipmentHeader != null && itemBackCover != null && eqBackCover != null)
         {
-            // Ensure ITEMS and EQUIPMENTS receive clicks
-            itemsHeader.pickingMode = PickingMode.Position;
-            equipmentHeader.pickingMode = PickingMode.Position;
-
-            // Prevent child elements from blocking clicks
-            if (itemText != null) itemText.pickingMode = PickingMode.Ignore;
-            if (eqText != null) eqText.pickingMode = PickingMode.Ignore;
-            if (itemRect != null) itemRect.pickingMode = PickingMode.Ignore;
-            if (eqRect != null) eqRect.pickingMode = PickingMode.Ignore;
 
             // Fix potential overlapping issues
             itemsHeader.BringToFront(); // Ensures ITEMS is on top
@@ -350,35 +315,6 @@ public class ShopManager : MonoBehaviour
             // Default states: ITEMS active, EQUIPMENTS inactive
             itemBackCover.style.backgroundColor = new StyleColor(new Color(0.29f, 0.66f, 0.82f, 200f / 255f)); // Active 4AA8D1
             eqBackCover.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f)); // Inactive 717171
-
-            // Hover effect: Light version of active color
-            itemsHeader.RegisterCallback<MouseEnterEvent>(evt =>
-            {
-                if (!itemsHeader.ClassListContains("active"))
-                    itemBackCover.style.backgroundColor = new StyleColor(new Color(0.29f, 0.66f, 0.82f, 150f / 255f)); // Lighter 4AA8D1
-            });
-
-            itemsHeader.RegisterCallback<MouseLeaveEvent>(evt =>
-            {
-                if (!itemsHeader.ClassListContains("active"))
-                    itemBackCover.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f)); // Reset to 717171
-            });
-
-            equipmentHeader.RegisterCallback<MouseEnterEvent>(evt =>
-            {
-                if (!equipmentHeader.ClassListContains("active"))
-                    eqBackCover.style.backgroundColor = new StyleColor(new Color(0.29f, 0.66f, 0.82f, 150f / 255f)); // Lighter 4AA8D1
-            });
-
-            equipmentHeader.RegisterCallback<MouseLeaveEvent>(evt =>
-            {
-                if (!equipmentHeader.ClassListContains("active"))
-                    eqBackCover.style.backgroundColor = new StyleColor(new Color(0.44f, 0.44f, 0.44f, 212f / 255f)); // Reset to 717171
-            });
-
-            // Click event to switch active tab
-            equipmentHeader.RegisterCallback<ClickEvent>(evt => SetActiveTab(equipmentHeader, itemsHeader));
-            itemsHeader.RegisterCallback<ClickEvent>(evt => SetActiveTab(itemsHeader, equipmentHeader));
 
             // Mark ITEMS as active initially & populate shop with default items
             itemsHeader.AddToClassList("active");
