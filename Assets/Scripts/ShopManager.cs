@@ -570,7 +570,7 @@ public class ShopManager : MonoBehaviour
             ownedAmountLabel.text = $"{newOwnedQuantity}";
         }
 
-        _dialogueText.text = "You have successfully sold " + sellAmount + "x " + _selectedItem.itemName + "\nfor" + totalSellPrice + "You are now left with" + newOwnedQuantity + "!!";
+        _dialogueText.text = "You have successfully sold " + sellAmount + "x " + _selectedItem.itemName + "\nfor " + totalSellPrice + ". You are now left with " + newOwnedQuantity + "!!";
         UnityEngine.Debug.Log($"Sold {sellAmount}x {_selectedItem.itemName} for {totalSellPrice}. Remaining: {newOwnedQuantity}");
     }
 
