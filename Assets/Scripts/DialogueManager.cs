@@ -22,7 +22,8 @@ public class DialogueManager : MonoBehaviour
         Sell 
     }
     private Selection currentSelection = Selection.Buy;
-    private bool shopOpened = false;
+
+    public ShopManager shopManager;
 
     private void Start()
     {
@@ -38,6 +39,17 @@ public class DialogueManager : MonoBehaviour
         _dialogueLabel = _root.Q<UnityEngine.UIElements.Label>("StartingTxt");
         buyLabel = _root.Q<UnityEngine.UIElements.Label>("BuyTxt");
         sellLabel = _root.Q<UnityEngine.UIElements.Label>("SellTxt");
+
+        // Ensure shopManager is assigned
+        if (shopManager == null)
+        {
+            shopManager = FindFirstObjectByType<ShopManager>();
+            if (shopManager == null)
+            {
+                UnityEngine.Debug.LogError("DialogueManager: shopManager is missing in the scene!");
+                return; // Prevent further execution if missing
+            }
+        }
 
         // Start the dialogue with the options immediately
         StartDialogue("Ah-ha! A customer!\nWhat would you like to do today?");
@@ -59,25 +71,24 @@ public class DialogueManager : MonoBehaviour
 
     private void OnKeyUp(KeyUpEvent e)
     {
-        if (!shopOpened)
+        // W key - move up (Buy option)
+        if (e.keyCode == KeyCode.W)
         {
-            // W key - move up (Buy option)
-            if (e.keyCode == KeyCode.W)
-            {
-                currentSelection = Selection.Buy;
-                UpdateSelection();
-            }
-            // S key - move down (Sell option)
-            else if (e.keyCode == KeyCode.S)
-            {
-                currentSelection = Selection.Sell;
-                UpdateSelection();
-            }
-            // L key - confirm the selection (Buy/Sell)
-            else if (e.keyCode == KeyCode.L)
-            {
-                OpenShop();
-            }
+            currentSelection = Selection.Buy;
+            shopManager.ToggleBuySellMode(false);
+            UpdateSelection();
+        }
+        // S key - move down (Sell option)
+        else if (e.keyCode == KeyCode.S)
+        {
+            currentSelection = Selection.Sell;
+            shopManager.ToggleBuySellMode(true);
+            UpdateSelection();
+        }
+        // L key - confirm the selection (Buy/Sell)
+        else if (e.keyCode == KeyCode.L)
+        {
+            OpenShop();
         }
     }
 
@@ -103,6 +114,5 @@ public class DialogueManager : MonoBehaviour
         }
 
         _root.style.display = DisplayStyle.None; // Hide Dialogue UI
-        shopOpened = true; // Prevent further navigation
     }
 }

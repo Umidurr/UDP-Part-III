@@ -8,6 +8,7 @@ public class ShopManager : MonoBehaviour
 {
     // UI Document assigned in the Inspector
     public UIDocument doc;
+    public UIDocument diaUI;
 
     // Root UI element
     private VisualElement _root;
@@ -139,12 +140,12 @@ public class ShopManager : MonoBehaviour
         // Add Header Selection and Hover Effects
         SetupHeaders();
 
-        _dialogueText = _root.Q<UnityEngine.UIElements.Label>("DialogueTxt");
+        _dialogueText = _root.Q<UnityEngine.UIElements.Label>("DialogueTxt");      
     }
 
-    public void ToggleBuySellMode()
+    public void ToggleBuySellMode(bool yesno)
     {
-        isSellPage = !isSellPage; // Toggle mode between Buy and Sell
+        isSellPage = yesno; 
         UpdateBuySellLabel();
         PopulateShop(GetActiveShopList()); // Refresh shop to display correct prices
     }
@@ -523,7 +524,7 @@ public class ShopManager : MonoBehaviour
         // Prevent selling if the player doesn't own enough
         if (ownedQuantity < sellAmount || sellAmount <= 0)
         {
-            _dialogueText.text = "You have cannot sell " + sellAmount + "x " + _selectedItem.itemName + "!\nYou only own" + ownedQuantity + "!!";
+            _dialogueText.text = "You have cannot sell " + sellAmount + "x " + _selectedItem.itemName + "!\nYou only own " + ownedQuantity + "!!";
             UnityEngine.Debug.LogWarning($"Cannot sell {sellAmount}x {_selectedItem.itemName}. You only own {ownedQuantity}.");
             return;
         }
@@ -605,7 +606,7 @@ public class ShopManager : MonoBehaviour
         }
         else if (e.keyCode == KeyCode.K)
         {
-            // Insert back/cancel button or something here
+            CloseShop();
         }
         else if (e.keyCode == KeyCode.Q) // Press Q to switch to Items Tab
         {
@@ -744,6 +745,11 @@ public class ShopManager : MonoBehaviour
         {
             _buySellLabel.text = isSellPage ? "SELL" : "BUY";
         }
+
+        if (_dialogueText != null)
+        {
+            _dialogueText.text = isSellPage ? "Hello! Welcome to my Shop! What would you like\n to sell here?" : "Hello! Welcome to my Shop! What would you like\nto buy here?";
+        }
     }
 
     // New Function to Reset Stock
@@ -758,6 +764,16 @@ public class ShopManager : MonoBehaviour
         {
             item.ResetStock();
         }
+    }
+
+    void CloseShop()
+    {
+        if (diaUI != null)
+        {
+            diaUI.rootVisualElement.style.display = DisplayStyle.Flex; // Show Dialogue UI
+        }
+
+        _root.style.display = DisplayStyle.None; // Hide shopUI
     }
 }
 

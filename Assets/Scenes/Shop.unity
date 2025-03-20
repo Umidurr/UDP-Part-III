@@ -859,6 +859,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   doc: {fileID: 808752818}
+  diaUI: {fileID: 336958617}
   playerInventory: {fileID: 0}
   shopItems:
   - {fileID: 11400000, guid: 78f91d74386772b44b6ae8aefe778497, type: 2}
@@ -893,7 +894,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueUI: {fileID: 336958617}
   shopUI: {fileID: 808752818}
-  shopManager: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
