@@ -13,7 +13,7 @@ public class DialogueManager : MonoBehaviour
     private UnityEngine.UIElements.Label buyLabel;
     private UnityEngine.UIElements.Label sellLabel;
 
-    private Color selectedColor = new Color(1.0f, 0.39f, 0.39f, 100f / 255f); // #70FFC7 (100 opacity)
+    private Color selectedColor = new Color(0.44f, 1.0f, 0.78f, 100f / 255f); // #70FFC7 (100 opacity)
     private Color unselectedColor = new Color(0.44f, 0.44f, 0.44f, 212f / 255f); // #717171 (212 opacity)
 
     private enum Selection 
@@ -22,26 +22,11 @@ public class DialogueManager : MonoBehaviour
         Sell 
     }
     private Selection currentSelection = Selection.Buy;
-
     private bool shopOpened = false;
-
-    // Reference to ShopManager (to toggle Buy/Sell mode)
-    public ShopManager shopManager;
 
     private void Start()
     {
         _root = dialogueUI.rootVisualElement;
-
-        //ShopManager shopScript = FindFirstObjectByType<ShopManager>();
-
-        //if (shopScript != null)
-        //{
-        //    shopScript.gameObject.SetActive(false); // Disable its GameObject
-        //}
-        //else
-        //{
-        //    UnityEngine.Debug.LogError("ShopManager script is missing in the scene!");
-        //}
 
         // Ensure Shop UI is hidden at the start
         if (shopUI != null)
@@ -59,6 +44,10 @@ public class DialogueManager : MonoBehaviour
 
         // Register keyboard input for the dialogue
         _root.RegisterCallback<KeyUpEvent>(OnKeyUp);
+
+        // Allow the root UI element to be focusable
+        _root.focusable = true;
+        _root.Focus();
     }
 
 
@@ -96,13 +85,13 @@ public class DialogueManager : MonoBehaviour
     {
         if (currentSelection == Selection.Buy)
         {
-            buyLabel.style.color = selectedColor;
-            sellLabel.style.color = unselectedColor;
+            buyLabel.style.backgroundColor = selectedColor;
+            sellLabel.style.backgroundColor = unselectedColor;
         }
         else
         {
-            buyLabel.style.color = unselectedColor;
-            sellLabel.style.color = selectedColor;
+            buyLabel.style.backgroundColor = unselectedColor;
+            sellLabel.style.backgroundColor = selectedColor;
         }
     }
 
