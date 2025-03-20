@@ -7,6 +7,7 @@ public class DialogueManager : MonoBehaviour
 {
     public UIDocument dialogueUI;
     public UIDocument shopUI;
+    public UIDocument UIdemo;
 
     public Transform player;    // Reference to the player
     public Transform merchant;  // Reference to the merchant
@@ -32,6 +33,8 @@ public class DialogueManager : MonoBehaviour
     private void Start()
     {
         _root = dialogueUI.rootVisualElement;
+
+        UIdemo.rootVisualElement.style.display = DisplayStyle.Flex;
 
         // Ensure Shop UI is hidden at the start
         if (shopUI != null)
@@ -76,6 +79,7 @@ public class DialogueManager : MonoBehaviour
 
     private void ShowDialogue()
     {
+        UIdemo.rootVisualElement.style.display = DisplayStyle.None;
         dialogueUI.rootVisualElement.style.display = DisplayStyle.Flex; // Show Dialogue UI
         buySellBox.style.opacity = 1f;
 
@@ -151,6 +155,7 @@ public class DialogueManager : MonoBehaviour
     private void CloseDialogue()
     {
         _dialogueLabel.text = "Thank you! See you again soon!";
+        UIdemo.rootVisualElement.style.display = DisplayStyle.Flex;
 
         if (buySellBox != null)
         {
