@@ -29,8 +29,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        UnityEngine.Debug.LogError($"Screen Resolution: {Screen.width}x{Screen.height}");
-
         // Prevent movement if dialogue is active
         if (dialogueManager.isDialogueActive) return;
 
