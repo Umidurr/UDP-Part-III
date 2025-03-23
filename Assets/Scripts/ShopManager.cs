@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection.Emit;
 using UnityEngine;
@@ -12,6 +13,7 @@ public class ShopManager : MonoBehaviour
 
     // Root UI element
     private VisualElement _root;
+    private VisualElement _diaRoot;
 
     // UI Elements
     private UnityEngine.UIElements.Label _playerMoneyLabel;
@@ -58,6 +60,7 @@ public class ShopManager : MonoBehaviour
     {
         // Retrieve the root UI element
         _root = doc.rootVisualElement;
+        _diaRoot = diaUI.rootVisualElement;
 
         // Locate the Buy/Sell Label UI element
         _buySellLabel = _root.Q<UnityEngine.UIElements.Label>("BuySellLabel");
@@ -723,9 +726,17 @@ public class ShopManager : MonoBehaviour
         if (diaUI != null)
         {
             diaUI.rootVisualElement.style.display = DisplayStyle.Flex; // Show Dialogue UI
+            _diaRoot.focusable = true;
+            StartCoroutine(ForceFocusToDialogueNextFrame());
         }
 
         _root.style.display = DisplayStyle.None; // Hide shopUI
+    }
+
+    private IEnumerator ForceFocusToDialogueNextFrame()
+    {
+        yield return null;
+        _diaRoot.Focus();
     }
 }
 

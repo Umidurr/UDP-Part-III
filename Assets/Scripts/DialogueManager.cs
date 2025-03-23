@@ -2,6 +2,7 @@
 using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.UIElements;
+using System.Collections;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class DialogueManager : MonoBehaviour
     public float interactionDistance = 1.5f; // Distance required to interact
 
     private VisualElement _root;
+    private VisualElement _shopRoot;
     private VisualElement buySellBox;
 
     private UnityEngine.UIElements.Label _dialogueLabel;
@@ -33,6 +35,7 @@ public class DialogueManager : MonoBehaviour
     private void Start()
     {
         _root = dialogueUI.rootVisualElement;
+        _shopRoot = shopUI.rootVisualElement;
 
         UIdemo.rootVisualElement.style.display = DisplayStyle.Flex;
 
@@ -89,7 +92,7 @@ public class DialogueManager : MonoBehaviour
 
         // Allow the root UI element to be focusable
         _root.focusable = true;
-        _root.Focus();
+        StartCoroutine(ForceFocusNextFrame());
     }
 
     private void OnKeyUp(KeyUpEvent e)
@@ -142,6 +145,8 @@ public class DialogueManager : MonoBehaviour
         if (shopUI != null)
         {
             shopUI.rootVisualElement.style.display = DisplayStyle.Flex; // Show Shop UI
+            _shopRoot.focusable = true;
+            StartCoroutine(ForceFocusToShopNextFrame());
         }
 
         _root.style.display = DisplayStyle.None; // Hide Dialogue UI
@@ -166,5 +171,17 @@ public class DialogueManager : MonoBehaviour
         Invoke(nameof(HideDialogue), 2f);
 
         isDialogueActive = false;
+    }
+
+    private IEnumerator ForceFocusNextFrame()
+    {
+        yield return null; // Wait 1 frame
+        _root.Focus();
+    }
+
+    private IEnumerator ForceFocusToShopNextFrame()
+    {
+        yield return null;
+        _shopRoot.Focus();
     }
 }
